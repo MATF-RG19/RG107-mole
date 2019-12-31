@@ -7,7 +7,7 @@ Radnja se odigrava na njivi. Upravljate krticom koja krade povrce od seljaka. Me
 
 
 ## :wrench: Instalacija:
-1.Pomoću terminala zadati komandu za kloniranje:``` git clone https://github.com/MATF-RG19/RG86-RG107-mole.git```     
+1.Pomoću terminala zadati komandu za kloniranje:``` git clone https://github.com/MATF-RG19/RG107-mole.git```     
 2.Pozicionirajte se u direktorijum sa nazivom ``RG107-mole``   
 3.Pokrenite Makefile komandom ```make```     
 4.Igricu pokrenite sa ``./mole``
