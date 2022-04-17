@@ -4,7 +4,9 @@
 #include<string>
 #include<time.h>
 #include<vector>
+
 #include "image.h"
+#include "mole.hpp"
 
 
 #define PI 3.14159265
@@ -307,128 +309,6 @@ void ispis_teksta(float x, float y,std::string s,int opcija)
 }
 
 
-
-static bool provera_zakljucavanja();
-
-//Klasa za krticu
-class mole{
-    
-public:
-    //Koordinate centra kvadrata koji predstavlja krticu
-    float cx,cz;
-    //Broj osvojenih poena
-    int poeni=0;
-    //Indikator da li je krtica trenutno "zakljucana",
-    //odnosno da li se uhvatila za neko povrce
-    bool otkljucano=true;
-    
-    mole(float x,float y){
-        
-        cx=x;
-        cz=y;
-        
-    }
-    
-    //Iscrtavanje kvadrata koji predstavlja krticu
-    void iscrtaj(){
-        
-        //Ne zelimo da bude osvetljen,zbog boljeg kontrasta
-        glDisable(GL_LIGHTING);
-        glDisable(GL_LIGHT0);
-        
-        glColor3f(0.41,0.29,0.18);
-      
-        glBegin(GL_POLYGON);
-            glVertex3f(cx+0.05,0.501,cz+0.05);
-            glVertex3f(cx-0.05,0.501,cz+0.05);
-            glVertex3f(cx-0.05,0.501,cz-0.05);
-            glVertex3f(cx+0.05,0.501,cz-0.05);
-        glEnd();
-        
-        glEnable(GL_LIGHT0);
-        glEnable(GL_LIGHTING);
-        moze_da_se_zakljuca=provera_zakljucavanja();
-        
-    }
-    
-    //Naredni metodi sluze za pomeranje krtice po postolju
-    //Pokrecu se iz on_keyboard funkcije tasterima w,s,a,d,
-    //kao i q,e,z,c, za pomeranje ukoso
-    
-        void pomeri_levo(){
-       
-        if(cx>-1.4 && otkljucano)
-                cx+=-0.05;
-        
-    }
-    
-    void pomeri_desno(){
-        
-        if(cx<1.4 && otkljucano)
-                cx+=0.05;
-        
-    }
-    
-    void pomeri_gore(){
-        
-        if(cz>-1.4 && otkljucano)
-                cz+=-0.05;
-        
-    }
-    
-    void pomeri_dole(){
-        
-        if(cz<1.45 && otkljucano)
-                cz+=0.05;
-        
-    }
-    
-    void pomeri_gore_levo(){
-        
-        pomeri_gore();
-        pomeri_levo();
-        
-    }
-    
-      void pomeri_gore_desno(){
-        
-        pomeri_gore();
-        pomeri_desno();
-        
-    }
-    
-      void pomeri_dole_levo(){
-        
-        pomeri_dole();
-        pomeri_levo();
-        
-    }
-    
-      void pomeri_dole_desno(){
-        
-        pomeri_dole();
-        pomeri_desno();
-        
-    }
-
-    
-    void zakljucaj(){
-        otkljucano=false;
-    }
-    
-    void otkljucaj(){
-        otkljucano=true;
-    }
-    
-    bool provera_otkljucano(){
-        return otkljucano;
-    }
-    
-    
-    bool moze_da_se_zakljuca=provera_zakljucavanja();
-    
-};
-
 //Instanciramo krticu
 static mole krtica=mole(0,1.45);
 
@@ -660,7 +540,7 @@ class sargarepa{
            
            //Ako je sargarepa skroz uvucena, povecava se broj poena
             if(preostalo_koraka==0)
-                krtica.poeni+=4;
+                krtica.uvecaj_poene(4);
             
        }
     }
@@ -668,14 +548,14 @@ class sargarepa{
     float granica=0.1;
     //Funkcija koja proverava da li je krtica ispod ili dovoljno blizu sargarepi
     //da moze da se uhvati i da je uvuce
-    bool poklapaju_se_koordinate(){
+    bool poklapaju_se_koordinate() const {
         
-        return (krtica.cx >(poz_x-granica) && krtica.cx <(poz_x+granica)) &&
-            (krtica.cz >(poz_z-granica) && krtica.cz <(poz_z+granica));
+        return (krtica.x() >(poz_x-granica) && krtica.x() <(poz_x+granica)) &&
+            (krtica.z() >(poz_z-granica) && krtica.z() <(poz_z+granica));
     
     }
     
-    bool pojedena(){
+    bool pojedena() const {
         
         return poz_y<=0.5;
         
@@ -683,7 +563,7 @@ class sargarepa{
     
     bool trenutno_zakljucana(){
         
-        return poklapaju_se_koordinate() && !krtica.otkljucano && preostalo_koraka<4;
+        return poklapaju_se_koordinate() && !krtica.provera_otkljucano() && preostalo_koraka<4;
         
     }
     
@@ -835,7 +715,7 @@ class rotkvica{
            
             //Ako je rotkvica pojedena uvecava se broj poena
             if(preostalo_koraka==0)
-                krtica.poeni+=3;
+                krtica.uvecaj_poene(3);
             
        }
     }
@@ -845,14 +725,14 @@ class rotkvica{
     float granica=0.1;
     //Funkcija koja proverava da li je krtica ispod ili dovoljno blizu rotkvice
     //da moze da se uhvati i da je uvuce
-    bool poklapaju_se_koordinate(){
+    bool poklapaju_se_koordinate() const {
         
-        return (krtica.cx >(poz_x-granica) && krtica.cx <(poz_x+granica)) &&
-            (krtica.cz >(poz_z-granica) && krtica.cz <(poz_z+granica));
+        return (krtica.x() >(poz_x-granica) && krtica.x() <(poz_x+granica)) &&
+            (krtica.z() >(poz_z-granica) && krtica.z() <(poz_z+granica));
             
     }
     
-    bool pojedena(){
+    bool pojedena() const {
         
         return poz_y<=0.45;
         
@@ -860,7 +740,7 @@ class rotkvica{
     
     bool trenutno_zakljucana(){
         
-        return poklapaju_se_koordinate() && !krtica.otkljucano && preostalo_koraka<3;
+        return poklapaju_se_koordinate() && !krtica.provera_otkljucano() && preostalo_koraka<3;
         
     }
    
@@ -1127,7 +1007,7 @@ class pecurka{
                 glutTimerFunc(300,timer_pecurka,TIMER_PECURKA);
                 pecurka_pokrenut=1;
                 //Povecava se broj osvojenih poena
-                krtica.poeni+=10;
+                krtica.uvecaj_poene(10);
             }
        }
     }
@@ -1136,14 +1016,14 @@ class pecurka{
     float granica=0.1;
     //Provera da li je krtica dovoljno blizu pecurki da moze da se
     //uhvati za nju i da je uvuce
-    bool poklapaju_se_koordinate(){
+    bool poklapaju_se_koordinate() const {
         
-        return (krtica.cx >(poz_x-granica) && krtica.cx <(poz_x+granica)) &&
-            (krtica.cz >(poz_z-granica) && krtica.cz <(poz_z+granica));
+        return (krtica.x() >(poz_x-granica) && krtica.x() <(poz_x+granica)) &&
+            (krtica.z() >(poz_z-granica) && krtica.z() <(poz_z+granica));
             
     }
     
-    bool pojedena(){
+    bool pojedena() const {
         
         return poz_y<=0.35;
         
@@ -1152,7 +1032,7 @@ class pecurka{
     //Provera da li je krtica trenutno zakacena na pecurku
     bool trenutno_zakljucana(){
         
-        return poklapaju_se_koordinate() && !krtica.otkljucano && preostalo_koraka<6;
+        return poklapaju_se_koordinate() && !krtica.provera_otkljucano() && preostalo_koraka<6;
         
     }
    
@@ -1172,7 +1052,8 @@ static pecurka magicna_pecurka=pecurka();
 
 //Funkcija koja proverava da li je krtica u blizini nekog
 //povrca i da u tom slucaju moze da se zakljuca
-static bool provera_zakljucavanja(){
+static bool provera_zakljucavanja(const mole& krtica, const vector<sargarepa>& sargarepice, 
+                                                        const vector<rotkvica>& rotkvice, const pecurka& magicna_pecurka){
         
         bool a=false;
         
@@ -1893,7 +1774,7 @@ static void pobedio_si(){
     glColor3f(1,1,1);
     std::string p="Osvojeno poena:";
     ispis_fiksiranog_teksta(p,300,300,0);
-    ispis_fiksiranog_teksta(to_string(krtica.poeni),440,300,0);
+    ispis_fiksiranog_teksta(to_string(krtica.poeni()),440,300,0);
     }
 }
 
@@ -2136,7 +2017,7 @@ static void on_display(void){
         std::string s="Poeni:";
         ispis_fiksiranog_teksta(s,10,580,0);
         glColor3f(1,1,1);
-        ispis_fiksiranog_teksta(to_string(krtica.poeni),70,579,0);
+        ispis_fiksiranog_teksta(to_string(krtica.poeni()),70,579,0);
         
         //Ispis vremena na ekranu
         glColor3f(0.41,0.29,0.18);
@@ -2236,7 +2117,7 @@ static void on_keyboard(unsigned char key,int x,int y){
         //da se nalazi dovoljno blizu nekog povrca, inace
         //ne bi imala za sta da se uhvati
         case 'i':
-            if(krtica.provera_otkljucano() && krtica.moze_da_se_zakljuca)
+            if(krtica.provera_otkljucano() && provera_zakljucavanja(krtica, sargarepice, rotkvice, magicna_pecurka))
                 krtica.zakljucaj();
             else if(!igra_zavrsena)
                 krtica.otkljucaj();
