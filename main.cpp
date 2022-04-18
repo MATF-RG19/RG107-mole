@@ -7,6 +7,7 @@
 
 #include "image.h"
 #include "mole.hpp"
+#include "sargarepa.hpp"
 
 
 #define PI 3.14159265
@@ -375,206 +376,127 @@ static void drawCircle(float r, float x, float y) {
         glEnd();
 }
 
-//Klasa za sargarepu
-class sargarepa{
+
+void iscrtaj_sargarepu(const sargarepa& s){
     
-   private:
-       //Koordinate pozicije sargarepe
-        float poz_x,poz_y,poz_z;
-        //Broj koraka preostalih za potpuno uvlacenje 
-        //sargarepe u zemlju
-        int preostalo_koraka;
+    //Sargarepu iscrtavamo samo u slucaju da nije skroz uvucena u zemlju
+    if(!s.pojedena()){
         
-    public:
-    sargarepa(float x,float y){
-    
-       poz_x=x;
-       poz_z=y;
-       poz_y=0.6;
-       preostalo_koraka=4;
-       
+        //Ako je bar malo uvucena ispisivacemo preostali 
+        //broj koraka za uvlacenje
+        if(s.preostalo_koraka()<4){
+            
+            string str=to_string(s.preostalo_koraka());
+            //Ako krtica trenutno uvlaci sargarepu, tekst bojimo u crveno
+            if(s.trenutno_zakljucana())
+                ispis_teksta(s.x(),s.z(),str,1);
+            else
+                ispis_teksta(s.x(),s.z(),str,0);
+            
+        }
+        
+        //Iscrtavanje torusa oko sargarepe koji simulira gomilicu zemlje
+        glColor3f(0.43,0.26,0.18);
+        glPushMatrix();
+            glTranslatef(s.x(),0.5,s.z());
+            glRotatef(90,1,0,0);
+            glutSolidTorus(0.05,0.01,40,40);
+        glPopMatrix();
+        
+        //Iscrtavanje sargarepe
+        glPushMatrix();
+            
+            glTranslatef(s.x(),s.y(),s.z());
+            
+            //Crtanje crnih prstenova na sargarepi
+            glColor3f(0.1,0.1,0.1);
+            glBegin(GL_LINE_LOOP);
+            
+                    for(int i=0;i<180;i++){
+                        
+                        glVertex3f(cos(2*PI/180*i)*0.049,0,sin(2*PI/180*i)*0.049);
+                        
+                        
+                    }
+            
+            glEnd();
+            
+            glBegin(GL_LINE_LOOP);
+            
+                    for(int i=0;i<180;i++){
+                        
+                        glVertex3f(cos(2*PI/180*i)*0.04,-0.04,sin(2*PI/180*i)*0.04);
+                        
+                        
+            }
+            
+            glEnd();
+            
+            glBegin(GL_LINE_LOOP);
+            
+                    for(int i=0;i<180;i++){
+                        
+                        glVertex3f(cos(2*PI/180*i)*0.032,-0.07,sin(2*PI/180*i)*0.032);
+                        
+                        
+                    }
+            
+            glEnd();
+            
+            
+            //Crtanje zelenog dela sargarepe
+            glColor3f(0.1,0.45,0.1);
+            glBegin(GL_LINES);
+            
+                    for(int i=0;i<10;i++){
+                        
+                        glVertex3f(cos(2*PI/10*i)*0.03,0.1,sin(2*PI/10*i)*0.03);
+                        glVertex3f(0,-0.05,0);
+                        
+                    }
+            
+            glEnd();
+            
+            glRotatef(90,1,0,0);
+            glColor3f(0.93,0.57,0.13);
+            //U slucaju da je pecurka pojedena
+            //Sargarepu bojimo razlicitim bojama sve dok traje 
+            //Efekat pecurke na krticu
+            srand((pecurka_parametar+15)/30);
+            if(pecurka_pokrenut)
+                glColor3f(1.0-rand()/(float)RAND_MAX,1.0-rand()/(float)RAND_MAX,1.0-rand()/(float)RAND_MAX);
+            
+            glutSolidCone(0.05,0.2,10,10);
+            
+        glPopMatrix();
     }
     
     
-    void iscrtaj(){
+    //U slucaju da je sargarepa pojedena
+    //crta se krug koji predstavlja rupu u zemlji
+    else {
         
-        //Sargarepu iscrtavamo samo u slucaju da nije skroz uvucena u zemlju
-        if(!pojedena()){
-            
-            //Ako je bar malo uvucena ispisivacemo preostali 
-            //broj koraka za uvlacenje
-            if(preostalo_koraka<4){
-               
-                string str=to_string(preostalo_koraka);
-                //Ako krtica trenutno uvlaci sargarepu, tekst bojimo u crveno
-                if(trenutno_zakljucana())
-                    ispis_teksta(poz_x,poz_z,str,1);
-                else
-                    ispis_teksta(poz_x,poz_z,str,0);
-                
-            }
-            
-            //Iscrtavanje torusa oko sargarepe koji simulira gomilicu zemlje
+        glColor3f(0,0,0);
+        drawCircle(0.05,s.x(),s.z());
+        
+        glDisable(GL_LIGHTING);
+        glDisable(GL_LIGHT0);
+        glPushMatrix();
+            glTranslatef(0,-0.001,0);
             glColor3f(0.43,0.26,0.18);
-            glPushMatrix();
-                glTranslatef(poz_x,0.5,poz_z);
-                glRotatef(90,1,0,0);
-                glutSolidTorus(0.05,0.01,40,40);
-            glPopMatrix();
-            
-            //Iscrtavanje sargarepe
-            glPushMatrix();
-                
-                glTranslatef(poz_x,poz_y,poz_z);
-                
-                //Crtanje crnih prstenova na sargarepi
-                glColor3f(0.1,0.1,0.1);
-                glBegin(GL_LINE_LOOP);
-                
-                        for(int i=0;i<180;i++){
-                            
-                            glVertex3f(cos(2*PI/180*i)*0.049,0,sin(2*PI/180*i)*0.049);
-                            
-                            
-                        }
-                
-                glEnd();
-                
-                glBegin(GL_LINE_LOOP);
-                
-                        for(int i=0;i<180;i++){
-                            
-                            glVertex3f(cos(2*PI/180*i)*0.04,-0.04,sin(2*PI/180*i)*0.04);
-                            
-                            
-                }
-                
-                glEnd();
-                
-                glBegin(GL_LINE_LOOP);
-                
-                        for(int i=0;i<180;i++){
-                            
-                            glVertex3f(cos(2*PI/180*i)*0.032,-0.07,sin(2*PI/180*i)*0.032);
-                            
-                            
-                        }
-                
-                glEnd();
-                
-                
-                //Crtanje zelenog dela sargarepe
-                glColor3f(0.1,0.45,0.1);
-                glBegin(GL_LINES);
-                
-                        for(int i=0;i<10;i++){
-                            
-                            glVertex3f(cos(2*PI/10*i)*0.03,0.1,sin(2*PI/10*i)*0.03);
-                            glVertex3f(0,-0.05,0);
-                            
-                        }
-                
-                glEnd();
-                
-                glRotatef(90,1,0,0);
-                glColor3f(0.93,0.57,0.13);
-                //U slucaju da je pecurka pojedena
-                //Sargarepu bojimo razlicitim bojama sve dok traje 
-                //Efekat pecurke na krticu
-                srand((pecurka_parametar+15)/30);
-                if(pecurka_pokrenut)
-                    glColor3f(1.0-rand()/(float)RAND_MAX,1.0-rand()/(float)RAND_MAX,1.0-rand()/(float)RAND_MAX);
-               
-                glutSolidCone(0.05,0.2,10,10);
-                
-            glPopMatrix();
-        }
+            drawCircle(0.07,s.x(),s.z());
+        glPopMatrix();
+        glEnable(GL_LIGHTING);
+        glEnable(GL_LIGHT0);
         
-        
-        //U slucaju da je sargarepa pojedena
-        //crta se krug koji predstavlja rupu u zemlji
-        else {
-          
-            glColor3f(0,0,0);
-            drawCircle(0.05,poz_x,poz_z);
-            
-            glDisable(GL_LIGHTING);
-            glDisable(GL_LIGHT0);
-            glPushMatrix();
-                glTranslatef(0,-0.001,0);
-                glColor3f(0.43,0.26,0.18);
-                drawCircle(0.07,poz_x,poz_z);
-            glPopMatrix();
-            glEnable(GL_LIGHTING);
-            glEnable(GL_LIGHT0);
-            
-            //Ako je sargarepa uvucena, krtica se automatski oslobadja,
-            //jer vise nema za sta da se drzi
-            if(poklapaju_se_koordinate() && !krtica.provera_otkljucano())
-                krtica.otkljucaj();
-            
-        }
-    }
-    
-    //Metod za uvlacenje sargarepe, pokrece se iz
-    //on_keyboard funkcije, pritiskom na taster 'u',
-    //ali tek nakon sto se krtica zakaci za sargarepu
-    //pritiskom na taster 'i'
-    void uvuci(){
-        
-       if(poklapaju_se_koordinate() && !pojedena() && !krtica.provera_otkljucano()){
-          
-           //U slucaju da je pojedena pecurka krtica 
-           //moze da uvuce celo povrce odjednom
-            if(pecurka_pokrenut){
-               
-                poz_y-=0.03*preostalo_koraka;
-                preostalo_koraka=0;
-                
-            }
-            //Inace uvlaci sargarepu deo po deo
-            else{
-                poz_y-=0.03;
-                preostalo_koraka--;
-            }
-           
-           //Ako je sargarepa skroz uvucena, povecava se broj poena
-            if(preostalo_koraka==0)
-                krtica.uvecaj_poene(4);
-            
-       }
-    }
-    
-    float granica=0.1;
-    //Funkcija koja proverava da li je krtica ispod ili dovoljno blizu sargarepi
-    //da moze da se uhvati i da je uvuce
-    bool poklapaju_se_koordinate() const {
-        
-        return (krtica.x() >(poz_x-granica) && krtica.x() <(poz_x+granica)) &&
-            (krtica.z() >(poz_z-granica) && krtica.z() <(poz_z+granica));
-    
-    }
-    
-    bool pojedena() const {
-        
-        return poz_y<=0.5;
+        //Ako je sargarepa uvucena, krtica se automatski oslobadja,
+        //jer vise nema za sta da se drzi
+        if(s.poklapaju_se_koordinate() && !s.m_krtica->provera_otkljucano())
+            s.m_krtica->otkljucaj();
         
     }
-    
-    bool trenutno_zakljucana(){
-        
-        return poklapaju_se_koordinate() && !krtica.provera_otkljucano() && preostalo_koraka<4;
-        
-    }
-    
-    
-    pair<float,float> get_koordinate(){
-        
-        return make_pair(poz_x,poz_z);
-        
-    }
-    
-};
+}
+
 
 class rotkvica{
     
@@ -775,7 +697,7 @@ static void povrce(){
                 //Da li ce povrce biti sargarepa ili rotkvica u slucaju da se iscrtava
                 if(2*(rand()/(float)RAND_MAX)>1.0){
                     
-                    sargarepa a=sargarepa(x,z);
+                    sargarepa a=sargarepa(x,z,&krtica);
                     sargarepice.push_back(a);
                     
                 }
@@ -1990,7 +1912,7 @@ static void on_display(void){
     if(sargarepice.size()>0){
         
         for (int i=0;i<sargarepice.size();i++)
-            sargarepice[i].iscrtaj();
+            iscrtaj_sargarepu(sargarepice[i]);
         
     }
         
@@ -2130,7 +2052,7 @@ static void on_keyboard(unsigned char key,int x,int y){
             if(sargarepice.size()>1){
                
                 for (int i=0;i<sargarepice.size();i++)
-                    sargarepice[i].uvuci();
+                    sargarepice[i].uvuci(pecurka_pokrenut);
                
             }
             if(rotkvice.size()>1){
