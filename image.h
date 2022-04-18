@@ -1,4 +1,5 @@
-
+#ifndef __IMAGE__
+#define __IMAGE__
 /*
  * Dve strukture koje opisuju strukturu dva zaglavlja
  * kojima pocinje svaka slika u bmp formatu.
@@ -46,3 +47,5 @@ void image_done(Image *image);
  * image.
  */
 void image_read(Image *image, const char *filename);
+
+#endif
