@@ -35,7 +35,7 @@ class sargarepa{
     float y() const;
     float z() const;
 
-    std::pair<float,float> get_koordinate();
+    std::pair<float,float> get_koordinate() const;
     
 };
 

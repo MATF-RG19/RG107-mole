@@ -53,7 +53,7 @@ bool sargarepa::trenutno_zakljucana() const {
         
 }
 
-std::pair<float,float> sargarepa::get_koordinate() {
+std::pair<float,float> sargarepa::get_koordinate() const {
         
         return std::make_pair(poz_x,poz_z);
         
