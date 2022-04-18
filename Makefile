@@ -1,10 +1,10 @@
 PROGRAM = main.out
 CXX = g++
-CXXFLAGS = -std=c++17 -Wall -Wextra -Wno-sign-compare -Wno-unused-parameter
+CXXFLAGS = -std=c++17 -g -Wall -Wextra -Wno-sign-compare -Wno-unused-parameter
 #LDFLAGS = -L/usr/X11R6/lib -L/usr/pkg/lib
 LDLIBS  = -lglut -lGLU -lGL -lm
 
-$(PROGRAM): main.o image.o mole.o sargarepa.o
+$(PROGRAM): main.o image.o mole.o sargarepa.o rotkvica.o
 	$(CXX) -o $@ $(CXXFLAGS) $^ $(LDLIBS)
 
 image.o: image.c image.h
@@ -18,6 +18,9 @@ mole.o: mole.cpp mole.hpp
 
 sargarepa.o: sargarepa.cpp sargarepa.hpp
 	$(CXX) -c -o $@ $(CXXFLAGS) $< $(LDLIBS)
+
+rotkvica.o: rotkvica.cpp rotkvica.hpp
+	$(CXX) -c -o $@ $(CXXFLAGS) $< $(LDLIBS)	
 
 .PHONY: clean run
 

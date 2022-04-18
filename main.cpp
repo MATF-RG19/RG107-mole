@@ -8,6 +8,7 @@
 #include "image.h"
 #include "mole.hpp"
 #include "sargarepa.hpp"
+#include "rotkvica.hpp"
 
 
 #define PI 3.14159265
@@ -497,40 +498,21 @@ void iscrtaj_sargarepu(const sargarepa& s){
     }
 }
 
-
-class rotkvica{
-    
-   private:
-       //Koordinate pozicije sargarepe
-        float poz_x,poz_y,poz_z;
-        //Broj koraka preostalih za potpuno uvlacenje 
-        //sargarepe u zemlju
-        int preostalo_koraka;
-    public:
-    rotkvica(float x,float y){
-    
-       poz_x=x;
-       poz_z=y;
-       poz_y=0.5;
-       preostalo_koraka=3;
-       
-    }
-    
-    void iscrtaj(){
+  void iscrtaj_rotkvicu(const rotkvica& r){
         
         //Rotkvicu iscrtavamo samo u slucaju da nije skroz uvucena u zemlju
-        if(!pojedena()){
+        if(!r.pojedena()){
             
             //Ako je bar malo uvucena ispisivacemo preostali 
             //broj koraka za uvlacenje
-            if(preostalo_koraka<3){
+            if(r.preostalo_koraka()<3){
                 
-                string str=to_string(preostalo_koraka);
+                string str=to_string(r.preostalo_koraka());
                 //Ako krtica trenutno uvlaci rotkvicu, tekst bojimo u crveno
-                if(trenutno_zakljucana())
-                    ispis_teksta(poz_x,poz_z,str,1);
+                if(r.trenutno_zakljucana())
+                    ispis_teksta(r.x(),r.z(),str,1);
                 else
-                    ispis_teksta(poz_x,poz_z,str,0);
+                    ispis_teksta(r.x(),r.z(),str,0);
                 
             }
             
@@ -538,7 +520,7 @@ class rotkvica{
              //Iscrtavanje torusa oko rotkvice koji simulira gomilicu zemlje
             glColor3f(0.43,0.26,0.18);
             glPushMatrix();
-                glTranslatef(poz_x,0.5,poz_z);
+                glTranslatef(r.x(),0.5,r.z());
                 glRotatef(90,1,0,0);
                 glutSolidTorus(0.03,0.03,40,40);
             glPopMatrix();
@@ -546,7 +528,7 @@ class rotkvica{
             
             glPushMatrix();
                 
-                glTranslatef(poz_x,poz_y,poz_z);
+                glTranslatef(r.x(),r.y(),r.z());
                 
                 //Iscrtavanje zelenog dela rotkvice
                 //Iscrtavanje spoljasnjih listova
@@ -596,84 +578,23 @@ class rotkvica{
         else {
             
             glColor3f(0,0,0);
-            drawCircle(0.05,poz_x,poz_z);
+            drawCircle(0.05,r.x(),r.z());
             
             glDisable(GL_LIGHTING);
             glDisable(GL_LIGHT0);
             glPushMatrix();
                 glTranslatef(0,-0.001,0);
                 glColor3f(0.43,0.26,0.18);
-                drawCircle(0.07,poz_x,poz_z);
+                drawCircle(0.07,r.x(),r.z());
             glPopMatrix();
             glEnable(GL_LIGHTING);
             glEnable(GL_LIGHT0);
           
             //Kada je pojedena rotkvica krtica se otkljucava
-            if(poklapaju_se_koordinate() && !krtica.provera_otkljucano())
-                krtica.otkljucaj();
+            if(r.poklapaju_se_koordinate() && !r.m_krtica->provera_otkljucano())
+                r.m_krtica->otkljucaj();
         }
     }
-    //Metod za uvlacenje rotkvice, pokrece se iz
-    //on_keyboard funkcije, pritiskom na taster 'u',
-    //ali tek nakon sto se krtica zakaci za rotkvicu
-    //pritiskom na taster 'i'
-    void uvuci(){
-        
-       if(poklapaju_se_koordinate() && !pojedena() && !krtica.provera_otkljucano()){
-         
-           //U slucaju da je pojedena pecurka krtica 
-           //moze da uvuce celo povrce odjednom
-           if(pecurka_pokrenut){
-               
-                poz_y-=0.03*preostalo_koraka;
-                preostalo_koraka=0;
-                
-            }
-            //Inace uvlaci rotkvicu korak po korak
-            else{
-                poz_y-=0.02;
-                preostalo_koraka--;
-            }
-           
-            //Ako je rotkvica pojedena uvecava se broj poena
-            if(preostalo_koraka==0)
-                krtica.uvecaj_poene(3);
-            
-       }
-    }
-    
-    
-    
-    float granica=0.1;
-    //Funkcija koja proverava da li je krtica ispod ili dovoljno blizu rotkvice
-    //da moze da se uhvati i da je uvuce
-    bool poklapaju_se_koordinate() const {
-        
-        return (krtica.x() >(poz_x-granica) && krtica.x() <(poz_x+granica)) &&
-            (krtica.z() >(poz_z-granica) && krtica.z() <(poz_z+granica));
-            
-    }
-    
-    bool pojedena() const {
-        
-        return poz_y<=0.45;
-        
-    }
-    
-    bool trenutno_zakljucana(){
-        
-        return poklapaju_se_koordinate() && !krtica.provera_otkljucano() && preostalo_koraka<3;
-        
-    }
-   
-   
-    pair<float,float> get_koordinate(){
-        
-        return make_pair(poz_x,poz_z);
-        
-    }
-    
-};
 
 
 //Vektori koji sadrze povrce
@@ -704,7 +625,7 @@ static void povrce(){
                 
                 else{
                     
-                    rotkvica b=rotkvica(x,z);
+                    rotkvica b=rotkvica(x,z,&krtica);
                     rotkvice.push_back(b);
                     
                 }
@@ -1922,7 +1843,7 @@ static void on_display(void){
     if(rotkvice.size()>0){
         
         for (int i=0;i<rotkvice.size();i++)
-            rotkvice[i].iscrtaj();
+            iscrtaj_rotkvicu(rotkvice[i]);
         
     }
     
@@ -2058,7 +1979,7 @@ static void on_keyboard(unsigned char key,int x,int y){
             if(rotkvice.size()>1){
         
                 for (int i=0;i<rotkvice.size();i++)
-                    rotkvice[i].uvuci();
+                    rotkvice[i].uvuci(pecurka_pokrenut);
         
             }
             
