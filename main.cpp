@@ -10,6 +10,7 @@
 #include "sargarepa.hpp"
 #include "rotkvica.hpp"
 #include "pecurka.hpp"
+#include "coveculjak.hpp"
 
 
 #define PI 3.14159265
@@ -817,460 +818,7 @@ static bool provera_zakljucavanja(const mole& krtica, const vector<sargarepa>& s
 }
 
 
-//Klasa za seljaka
-class coveculjak{
 
-public:
-    //Koordinate seljaka
-    float pox,poz;
-    //Granicne koordinate do kojih moze da se krece
-    //i na x i na z osi
-    float granica_plus,granica_minus;
-    //Promenljive za tajmere koji sluze
-    //za kretanje seljaka i pomeranje ruku/nogu
-    int timer_noga=0;
-    int timer_pokrenut=1;
-    double timer_vrednost=0;
-
-    //Indikator koji sluzi da promeni znak
-    //parametra tajmer (tajmer_vrednost)
-    int ind1=0;
-    
-    coveculjak(float a,float b,float c,float d){
-        
-        pox=a;
-        poz=b;
-        
-        granica_minus=c;
-        granica_plus=d;
-        
-    }
-    
-    //Iscrtavamo glavu(sfera)
-    void glava(){
-        
-        glPushMatrix();
-            glColor3f(0.2,0.2,0.2);
-            
-            //Funkcija koja se javlja na vise mesta
-            //Sluzi da menja boju objektu ukoliko
-            //je aktivan efekat pecurke na krticu
-            srand((pecurka_parametar+15)/30);
-            if(pecurka_pokrenut)
-                    glColor3f(rand()/(float)RAND_MAX,1.0-rand()/(float)RAND_MAX,1.0-rand()/(float)RAND_MAX);
-            
-            glTranslatef(0,1,0);
-            glutSolidSphere(0.05,50,50);
-        glPopMatrix();
-        
-    }
-    //Iscrtavamo torzo
-    void torzo(){
-        
-        glPushMatrix();
-            glColor3f(0.18,0.34,0.49);
-            
-            //Objasnjeno u metodi "glava"
-            srand((pecurka_parametar+22)/30);
-            if(pecurka_pokrenut)
-                    glColor3f(1.0-rand()/(float)RAND_MAX,1.0-rand()/(float)RAND_MAX,rand()/(float)RAND_MAX);
-            
-            
-            glTranslatef(0,0.83,0);
-            glScalef(0.5,1,0.5);
-            glutSolidCube(0.22);
-        glPopMatrix();
-        
-    }
-    
-    //Iscrtavamo levu nogu
-    void leva_noga(){
-        
-        glPushMatrix();
-            glColor3f(0.18,0.34,0.49);
-            //Objasnjeno u metodi "glava"
-            srand((pecurka_parametar+11)/30);
-            if(pecurka_pokrenut)
-                    glColor3f(rand()/(float)RAND_MAX,rand()/(float)RAND_MAX,1.0-rand()/(float)RAND_MAX);
-            
-            glTranslatef(-0.03,0.62,0);
-            glTranslatef(0,0.1,0);
-            glRotatef(0+timer_noga,1,0,0);
-            glTranslatef(0,-0.1,0);
-            glScalef(0.25,1,0.25);
-            
-            glutSolidCube(0.21);
-        glPopMatrix();
-        
-    }
-    //Iscrtavamo desnu nogu
-    void desna_noga(){
-        
-        glPushMatrix();
-            glColor3f(0.18,0.34,0.49);
-            //Objasnjeno u metodi "glava"
-            srand((pecurka_parametar+11)/30);
-            if(pecurka_pokrenut)
-                    glColor3f(rand()/(float)RAND_MAX,rand()/(float)RAND_MAX,1.0-rand()/(float)RAND_MAX);
-            
-            glTranslatef(0.03,0.62,0);
-            glTranslatef(0,0.1,0);
-            glRotatef(0-timer_noga,1,0,0);
-            glTranslatef(0,-0.1,0);
-            glScalef(0.25,1,0.25);
-            glutSolidCube(0.21);
-        glPopMatrix();
-        
-    }
-    //Iscrtavamo desnu ruku
-    void desna_ruka(){
-        
-        glPushMatrix();
-            //Originalna boja je samo trenutno zakomentarisana
-           // glColor3f(0.29,0.52,0.74);
-            glColor3f(1,0,0);
-            //Objasnjeno u metodi "glava"
-            srand((pecurka_parametar+10)/30);
-                if(pecurka_pokrenut)
-                    glColor3f(rand()/(float)RAND_MAX,1.0-rand()/(float)RAND_MAX,rand()/(float)RAND_MAX);
-            
-            glTranslatef(0.075,0.83,0);
-            glTranslatef(0,0.085,0);
-            glRotatef(0+timer_noga,1,0,0);
-            glTranslatef(0,-0.085,0);
-            glScalef(0.2,1,0.2);
-            glutSolidCube(0.18);
-        glPopMatrix();
-        
-    }
-    
-    //Iscrtavamo levu ruku
-   void leva_ruka(){
-       
-        glPushMatrix();
-            glColor3f(0.29,0.52,0.74);
-            //Objasnjeno u metodi "glava"
-            srand((pecurka_parametar+5)/30);
-                if(pecurka_pokrenut)
-                    glColor3f(rand()/(float)RAND_MAX,1.0-rand()/(float)RAND_MAX,rand()/(float)RAND_MAX);
-            
-            glTranslatef(-0.075,0.83,0);
-            glTranslatef(0,0.085,0);
-            glRotatef(0-timer_noga,1,0,0);
-            glTranslatef(0,-0.085,0);
-            glScalef(0.2,1,0.2);
-            glutSolidCube(0.18);
-        glPopMatrix();
-    
-    }
-    
-    //Ugao za koji se coveculjak rotira
-    int ugao=0;
-    
-    //Iscrtavamo kompletnog coveculjka
-    void iscrtaj(){
-        
-        glPushMatrix();
-            glRotatef(ugao,0,1,0);
-            glava();
-            torzo();
-            leva_noga();
-            desna_noga();
-            leva_ruka();
-            desna_ruka();
-            oblast();
-        glPopMatrix();
-    }
-    
-//     Iscrtavamo kvadrat oko coveculjka u kom on
-//     moze da registruje da krtica uvlaci povrce
-    void oblast(){
-        
-        //Ne zelimo da bude osvetljen
-        glDisable(GL_LIGHTING);
-        glDisable(GL_LIGHT0);
-        
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-      
-        glColor4f(0.29,0.52,0.74,0.5);
-        glBegin(GL_QUADS);
-            glVertex3f(0.3,0.51,0.3);
-            glVertex3f(-0.3,0.51,0.3);
-            glVertex3f(-0.3,0.51,-0.3);
-            glVertex3f(0.3,0.51,-0.3);
-        glEnd();
-        
-        glDisable(GL_BLEND);
-        
-        //Ivica oko kvadrata
-        glColor3f(0.18,0.34,0.49);
-        glBegin(GL_LINE_LOOP);
-            glVertex3f(0.3,0.51,0.3);
-            glVertex3f(-0.3,0.51,0.3);
-            glVertex3f(-0.3,0.51,-0.3);
-            glVertex3f(0.3,0.51,-0.3);
-        glEnd();
-        
-        glEnable(GL_LIGHT0);
-        glEnable(GL_LIGHTING);
-    }
-    
-    
-    //Vrsimo proveru da li krtica uvlaci neko povrce koje se nalazi 
-    //u okviru oblasti koja se iscrtava oko coveculjka
-    bool uhvatio_krticu(){
-        
-        float x_trenutno;
-        float y_trenutno;
-        
-        float stranica_x;
-        float stranica_y;
-        
-        //U slucaju da se krtica krece duz x ili z ose, ta 
-        //koordinata se ne menja,dok drugu moramo azurirati
-        //jer se coveculjak za vreme kretanja translira iz 
-        //coska u kom je poslednjem bio
-        
-        if(smer){
-            
-            x_trenutno=pox;
-            y_trenutno=poz+timer_vrednost;
-            
-        }
-        
-        else{
-            
-            x_trenutno=pox+timer_vrednost;
-            y_trenutno=poz;
-            
-        }
-        
-        float znak1=1.0;
-        float znak2=1.0;
-        
-        if(x_trenutno>=0)
-            stranica_x=0.3;
-        else {
-            stranica_x=-0.3;
-            znak1*=-1.0;
-        }
-        
-        if(y_trenutno>=0)
-            stranica_y=0.3;
-        else {
-            stranica_y=-0.3;
-            znak2*=-1.0;
-        }
-        
-        //Racunamo koordinatu za svaku od ivica oblasti
-        //Dovoljne su nam cetiri koordinate da utvrdimo da li
-        //se neka tacka (centar povrca) nalazi u okviru kvadrata
-        //Ovakvim izracunavanjem obezbedjujemo da je npr.
-        //stranica1 uvek x koordinata stranice koja se nalazi ispred seljaka
-        float stranica1=znak1*(fabs(x_trenutno)+stranica_x);
-        float stranica2=znak1*(fabs(x_trenutno)-stranica_x);
-        float stranica3=znak2*(fabs(y_trenutno)+stranica_y);
-        float stranica4=znak2*(fabs(y_trenutno)-stranica_y);
-        
-        //Za svako povrce proveravamo da li je u oblasti
-        
-        //Moramo proveriti da li se u vektorima nalazi bar jedno povrce
-        if(sargarepice.size()>0){
-        
-            for (int i=0;i<sargarepice.size();i++){
-               pair<float,float>k=sargarepice[i].get_koordinate();
-              
-               if(stranica1>=k.first && stranica2<=k.first && 
-                   stranica3>=k.second && stranica4<=k.second && sargarepice[i].trenutno_zakljucana())
-                                    return true;
-              
-            }
-        }
-        
-    
-        if(rotkvice.size()>0){
-        
-            for (int i=0;i<rotkvice.size();i++){
-                pair<float,float>k=rotkvice[i].get_koordinate();
-              
-                if(stranica1>=k.first && stranica2<=k.first && 
-                   stranica3>=k.second && stranica4<=k.second && rotkvice[i].trenutno_zakljucana())
-                                    return true;
-                
-            }
-        }
-        
-        
-        pair<float,float>k=magicna_pecurka.get_koordinate();
-              
-                if(stranica1>=k.first && stranica2<=k.first && 
-                   stranica3>=k.second && stranica4<=k.second && magicna_pecurka.trenutno_zakljucana())
-                                    return true;
-        
-        
-        
-        //Nismo nasli u oblasti nijedno povrce koje krtica trenutno uvlaci
-        return false;
-    }
-    
-    //Iscrtavamo coveculjka na poziciji njegovih koordinata
-    void iscrtaj_na_poziciji(){
-        
-        glPushMatrix();
-            glTranslatef(pox,0,poz);
-            iscrtaj();
-        glPopMatrix();
-        
-    }
-    
-    //Metod koji pokrece coveculjka
-    // i u svakom koraku proverava da li je
-    //u oblasti krtica koja trenutno uvlaci povrce
-    void hodaj(bool a){
-        
-        if(!igra_zavrsena){
-        glPushMatrix();
-            if(a)
-                glTranslatef(pox,0,poz+timer_vrednost);
-            else
-                glTranslatef(pox+timer_vrednost,0,poz);
-            
-            iscrtaj();
-            
-        glPopMatrix();
-        }
-        
-         if(uhvatio_krticu())
-            izgubio_si();
-        
-    }
-    
-    //Zaustavljamo tajmere
-    void stani(){
-        
-        timer_noga=0;
-        timer_pokrenut=0;
-        
-    }
-
-    
-    void kreni(){
-        
-        timer_noga=1;
-        timer_pokrenut=1;
-        
-    }
-    
-    //Indikator koji oznacava kuda se krece coveculjak
-    //ako se krece gore-dole onda je true, false znaci levo-desno
-    bool smer=true;
-
-    void kretanje(){
-        
-            //Coveculjak hoda ukoliko se nalazi izmedju granica
-            //Provera kada se krece paralelno sa z osom
-            if(smer && poz+timer_vrednost<=granica_plus && poz+timer_vrednost>=granica_minus){
-                    hodaj(smer);
-                
-            }
-            //Provera kada se krece paralelno sa x osom
-            else if(!smer && pox+timer_vrednost<=granica_plus && pox+timer_vrednost>=granica_minus){
-                    hodaj(smer);
-                
-            }
-            
-            //Ako je dosao do granice
-            else{
-                
-                //Zaustavljamo coveculjka
-                //Samo za zaustavljanje kretanja ruku i nogu
-               stani();
-                
-                //Apdejtujemo koordinate coveculjka na
-               //koordinate coska u kom je trenutno
-                if(smer){
-                     if(ind1)poz+=timer_vrednost+0.02;
-                    else poz+=timer_vrednost-0.02;
-                }
-                else{
-                    if(ind1)pox+=timer_vrednost+0.02;
-                    else pox+=timer_vrednost-0.02;
-                }
-                
-                //Resetujemo vrednost tajmera
-                timer_vrednost=0;
-
-                //Iscrtavanje coveculjka kada stoji(inace treperi kada stigne u cosak)
-                iscrtaj_na_poziciji();
-
-                //Odlucujemo da li ce iz trenutno pozicije ici gore/dole ili levo/desno
-                //Ukoliko odabere levo/desno kretace se levo ili desno u zavisnosti od toga
-                //do koje je ivice stigao, ne moze preci preko granice kvadrata koji mu je zadat
-                srand(time(NULL));
-                smer=(2*(rand()/(float)RAND_MAX)>=1.0 ? true:false);
-                
-                //F-ovi sluze da bi poredjenje uopste bilo moguce, inace ne radi kako treba
-                if(pox==(granica_minus+0.01f)&& poz==(granica_minus+0.01f)){
-                    
-                    if(smer)
-                        ugao=0;
-                    else ugao=90;
-                    
-                    ind1=0;
-                    timer_vrednost=0.02;
-                    
-                }
-                
-                else if(pox==(granica_minus+0.01f) && poz==(granica_plus-0.01f)){
-                    
-                    if(smer){
-                        ind1=1;
-                        timer_vrednost=-0.02;
-                        ugao=180;
-                    }
-                    else{
-                        ind1=0;
-                        timer_vrednost=0.02;
-                        ugao=90;
-                    }
-                }
-                
-                else if(pox==(granica_plus-0.01f) && poz==(granica_plus-0.01f)){
-                    
-                    if(smer)
-                        ugao=180;
-                    else ugao=-90;
-                    ind1=1;
-                    timer_vrednost=-0.02;
-                    
-                    
-                }
-                else if(pox==(granica_plus-0.01f) && poz==(granica_minus+0.01f)){
-                    
-                    if(smer){
-                        ugao=0;
-                        ind1=0;
-                        timer_vrednost=0.02;
-                    }
-                    else {
-                        ugao=-90;
-                        ind1=1;
-                        timer_vrednost=-0.02;
-                    }
-                }
-                
-                
-             //Za ponovno pokretanje ruku i nogu        
-               kreni();
-            
-           
-            }
-            
-        
-    }
-
-};
 
 //Instanciramo dva coveculjka, zadajemo im pocetne pozicije 
 //i koordinate koje predstavljaju pozitivnu i negativnu (tj. levu,desnu,godrnju,donju
@@ -1287,14 +835,14 @@ static void on_timer(int id){
     if(id!=TIMER_KRETANJE)
         return;
     
-    if(cikica1.ind1==0)
-        cikica1.timer_vrednost+=0.02;
-    else if(cikica1.ind1==1)
-        cikica1.timer_vrednost-=0.02;
+    if(cikica1.ind1()==0)
+        cikica1.inc_timer_vrednost(0.02);
+    else if(cikica1.ind1()==1)
+        cikica1.inc_timer_vrednost(-0.02);
     
     glutPostRedisplay();
     
-    if(cikica1.timer_pokrenut)
+    if(cikica1.timer_pokrenut())
         glutTimerFunc(50,on_timer,TIMER_KRETANJE);
     
 }
@@ -1305,19 +853,19 @@ static void on_timer2(int id){
     
     if(id!=TIMER_N)
         return;
-    if(cikica1.timer_noga<=-20)
+    if(cikica1.timer_noga()<=-20)
         ind=0;
-    else if(cikica1.timer_noga>=20)
+    else if(cikica1.timer_noga()>=20)
         ind=1;
     
     if(ind==1)
-        cikica1.timer_noga-=1;
+        cikica1.inc_timer_noga(-1);
     else
-        cikica1.timer_noga+=1;
+        cikica1.inc_timer_noga(1);
     
     glutPostRedisplay();
     
-    if(cikica1.timer_pokrenut)
+    if(cikica1.timer_pokrenut())
         glutTimerFunc(10,on_timer2,TIMER_N);
     
 }
@@ -1331,14 +879,14 @@ static void on_timer3(int id){
     if(id!=TIMER_KRETANJEA)
         return;
     
-    if(cikica2.ind1==0)
-        cikica2.timer_vrednost+=0.02;
-    else if(cikica2.ind1==1)
-        cikica2.timer_vrednost-=0.02;
+    if(cikica2.ind1()==0)
+        cikica2.inc_timer_vrednost(0.02);
+    else if(cikica2.ind1()==1)
+        cikica2.inc_timer_vrednost(-0.02);
     
     glutPostRedisplay();
     
-    if(cikica2.timer_pokrenut)
+    if(cikica2.timer_pokrenut())
         glutTimerFunc(50,on_timer3,TIMER_KRETANJEA);
     
 }
@@ -1349,19 +897,19 @@ static void on_timer4(int id){
     
     if(id!=TIMER_NA)
         return;
-    if(cikica2.timer_noga<=-20)
+    if(cikica2.timer_noga()<=-20)
         ind4=0;
-    else if(cikica2.timer_noga>=20)
+    else if(cikica2.timer_noga()>=20)
         ind4=1;
     
     if(ind4==1)
-        cikica2.timer_noga-=1;
+        cikica2.inc_timer_noga(-1);
     else
-        cikica2.timer_noga+=1;
+        cikica2.inc_timer_noga(1);
     
     glutPostRedisplay();
     
-    if(cikica2.timer_pokrenut)
+    if(cikica2.timer_pokrenut())
         glutTimerFunc(10,on_timer4,TIMER_NA);
     
 }
@@ -1743,8 +1291,8 @@ static void on_display(void){
     iscrtaj_pecurku(magicna_pecurka);
 
     //Kretacnje seljaka
-    cikica1.kretanje();
-    cikica2.kretanje();
+    cikica1.kretanje(pecurka_pokrenut, pecurka_parametar,igra_zavrsena,sargarepice,rotkvice,magicna_pecurka);
+    cikica2.kretanje(pecurka_pokrenut, pecurka_parametar,igra_zavrsena,sargarepice,rotkvice,magicna_pecurka);
     
     //Ispis broja poena na ekranu
     if(!igra_zavrsena){
