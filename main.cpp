@@ -9,6 +9,7 @@
 #include "mole.hpp"
 #include "sargarepa.hpp"
 #include "rotkvica.hpp"
+#include "pecurka.hpp"
 
 
 #define PI 3.14159265
@@ -498,103 +499,103 @@ void iscrtaj_sargarepu(const sargarepa& s){
     }
 }
 
-  void iscrtaj_rotkvicu(const rotkvica& r){
+void iscrtaj_rotkvicu(const rotkvica& r){
+    
+    //Rotkvicu iscrtavamo samo u slucaju da nije skroz uvucena u zemlju
+    if(!r.pojedena()){
         
-        //Rotkvicu iscrtavamo samo u slucaju da nije skroz uvucena u zemlju
-        if(!r.pojedena()){
+        //Ako je bar malo uvucena ispisivacemo preostali 
+        //broj koraka za uvlacenje
+        if(r.preostalo_koraka()<3){
             
-            //Ako je bar malo uvucena ispisivacemo preostali 
-            //broj koraka za uvlacenje
-            if(r.preostalo_koraka()<3){
-                
-                string str=to_string(r.preostalo_koraka());
-                //Ako krtica trenutno uvlaci rotkvicu, tekst bojimo u crveno
-                if(r.trenutno_zakljucana())
-                    ispis_teksta(r.x(),r.z(),str,1);
-                else
-                    ispis_teksta(r.x(),r.z(),str,0);
-                
-            }
-            
-            
-             //Iscrtavanje torusa oko rotkvice koji simulira gomilicu zemlje
-            glColor3f(0.43,0.26,0.18);
-            glPushMatrix();
-                glTranslatef(r.x(),0.5,r.z());
-                glRotatef(90,1,0,0);
-                glutSolidTorus(0.03,0.03,40,40);
-            glPopMatrix();
-            
-            
-            glPushMatrix();
-                
-                glTranslatef(r.x(),r.y(),r.z());
-                
-                //Iscrtavanje zelenog dela rotkvice
-                //Iscrtavanje spoljasnjih listova
-                glColor3f(0.30,0.57,0.10);
-                glBegin(GL_TRIANGLES);
-                
-                        for(int i=0;i<8;i+=2){
-                            
-                            glVertex3f(cos(2*PI/8*i)*0.05,0.13,sin(2*PI/8*i)*0.05);
-                            glVertex3f(cos(2*PI/8*(i+1))*0.05,0.13,sin(2*PI/8*(i+1))*0.05);
-                            glVertex3f(0,0.02,0);
-                            
-                        }
-                
-                glEnd();
-                
-                //Iscrtavanje unutrasnjih listova
-                glColor3f(0.38,0.71,0.12);
-                glBegin(GL_TRIANGLES);
-                
-                        for(int i=0;i<8;i+=2){
-                            
-                            glVertex3f(cos(2*PI/8*(i+1))*0.03,0.13,sin(2*PI/8*(i+1))*0.03);
-                            glVertex3f(cos(2*PI/8*(i+2))*0.03,0.13,sin(2*PI/8*(i+2))*0.03);
-                            glVertex3f(0,0.02,0);
-                            
-                        }
-                
-                glEnd();
-                
-                glColor3f(0.73,0.12,0.26);
-                //U slucaju da je pecurka pojedena
-                //rotkvicu bojimo razlicitim bojama sve dok traje 
-                //efekat pecurke na krticu
-                srand(pecurka_parametar/30);
-                if(pecurka_pokrenut)
-                    glColor3f(rand()/(float)RAND_MAX,rand()/(float)RAND_MAX,rand()/(float)RAND_MAX);
-                
-                glRotatef(90,1,0,0);
-                glutSolidSphere(0.05,10,10);
-            glPopMatrix();
+            string str=to_string(r.preostalo_koraka());
+            //Ako krtica trenutno uvlaci rotkvicu, tekst bojimo u crveno
+            if(r.trenutno_zakljucana())
+                ispis_teksta(r.x(),r.z(),str,1);
+            else
+                ispis_teksta(r.x(),r.z(),str,0);
             
         }
         
-        //U slucaju da je rotkvica pojedena
-        //crta se krug koji predstavlja rupu u zemlji
-        else {
+        
+            //Iscrtavanje torusa oko rotkvice koji simulira gomilicu zemlje
+        glColor3f(0.43,0.26,0.18);
+        glPushMatrix();
+            glTranslatef(r.x(),0.5,r.z());
+            glRotatef(90,1,0,0);
+            glutSolidTorus(0.03,0.03,40,40);
+        glPopMatrix();
+        
+        
+        glPushMatrix();
             
-            glColor3f(0,0,0);
-            drawCircle(0.05,r.x(),r.z());
+            glTranslatef(r.x(),r.y(),r.z());
             
-            glDisable(GL_LIGHTING);
-            glDisable(GL_LIGHT0);
-            glPushMatrix();
-                glTranslatef(0,-0.001,0);
-                glColor3f(0.43,0.26,0.18);
-                drawCircle(0.07,r.x(),r.z());
-            glPopMatrix();
-            glEnable(GL_LIGHTING);
-            glEnable(GL_LIGHT0);
-          
-            //Kada je pojedena rotkvica krtica se otkljucava
-            if(r.poklapaju_se_koordinate() && !r.m_krtica->provera_otkljucano())
-                r.m_krtica->otkljucaj();
-        }
+            //Iscrtavanje zelenog dela rotkvice
+            //Iscrtavanje spoljasnjih listova
+            glColor3f(0.30,0.57,0.10);
+            glBegin(GL_TRIANGLES);
+            
+                    for(int i=0;i<8;i+=2){
+                        
+                        glVertex3f(cos(2*PI/8*i)*0.05,0.13,sin(2*PI/8*i)*0.05);
+                        glVertex3f(cos(2*PI/8*(i+1))*0.05,0.13,sin(2*PI/8*(i+1))*0.05);
+                        glVertex3f(0,0.02,0);
+                        
+                    }
+            
+            glEnd();
+            
+            //Iscrtavanje unutrasnjih listova
+            glColor3f(0.38,0.71,0.12);
+            glBegin(GL_TRIANGLES);
+            
+                    for(int i=0;i<8;i+=2){
+                        
+                        glVertex3f(cos(2*PI/8*(i+1))*0.03,0.13,sin(2*PI/8*(i+1))*0.03);
+                        glVertex3f(cos(2*PI/8*(i+2))*0.03,0.13,sin(2*PI/8*(i+2))*0.03);
+                        glVertex3f(0,0.02,0);
+                        
+                    }
+            
+            glEnd();
+            
+            glColor3f(0.73,0.12,0.26);
+            //U slucaju da je pecurka pojedena
+            //rotkvicu bojimo razlicitim bojama sve dok traje 
+            //efekat pecurke na krticu
+            srand(pecurka_parametar/30);
+            if(pecurka_pokrenut)
+                glColor3f(rand()/(float)RAND_MAX,rand()/(float)RAND_MAX,rand()/(float)RAND_MAX);
+            
+            glRotatef(90,1,0,0);
+            glutSolidSphere(0.05,10,10);
+        glPopMatrix();
+        
     }
+    
+    //U slucaju da je rotkvica pojedena
+    //crta se krug koji predstavlja rupu u zemlji
+    else {
+        
+        glColor3f(0,0,0);
+        drawCircle(0.05,r.x(),r.z());
+        
+        glDisable(GL_LIGHTING);
+        glDisable(GL_LIGHT0);
+        glPushMatrix();
+            glTranslatef(0,-0.001,0);
+            glColor3f(0.43,0.26,0.18);
+            drawCircle(0.07,r.x(),r.z());
+        glPopMatrix();
+        glEnable(GL_LIGHTING);
+        glEnable(GL_LIGHT0);
+        
+        //Kada je pojedena rotkvica krtica se otkljucava
+        if(r.poklapaju_se_koordinate() && !r.m_krtica->provera_otkljucano())
+            r.m_krtica->otkljucaj();
+    }
+}
 
 
 //Vektori koji sadrze povrce
@@ -640,257 +641,148 @@ static void povrce(){
     
 }
 
-
-class pecurka{
-    
-   private:
-       //Koordinate pecurke
-        float poz_x,poz_y,poz_z;
-        //Broj preostalih koraka potrebnih da se pecurka uvuce
-        int preostalo_koraka;
-    public:
+void iscrtaj_pecurku(const pecurka& p){
         
-    
-    pecurka(){
+    if(!p.pojedena()){
         
-//       Nasumicno biramo poziciju pecurke
-//       Ona se uvek nalazi u centralnom delu
-//       Tako da je ili u samom centru i moze se pojesti bez 
-//       mogucnosti da nas seljak uhvati
-//       Ili je na nekoj od ivica i postoji mogucnost da nas uhvati 
-        
-        srand(time(NULL));
-        int a=5.0*(rand()/(float)RAND_MAX);
-        
-        if(a<=1.0){
-            poz_x=0.25;
-            poz_z=0;
-        }
-        
-        else if(a<=2.0){
-            poz_x=-0.25;
-            poz_z=0;
-        }
-        
-        else if(a<=3.0){
-            poz_x=0;
-            poz_z=0.25;
-        }
-        
-        else if(a<=4.0){
-            poz_x=0;
-            poz_z=-0.25;
-        }
-        
-        else if(a<=5.0){
-            poz_x=0;
-            poz_z=0;
-        }
-        
-        poz_y=0.5;
-        preostalo_koraka=6;
-       
-    }
-    
-    void iscrtaj(){
-        
-        if(!pojedena()){
+        //Izvrsava se samo u slucaju da je pecurka bar malo uvucena
+        if(p.preostalo_koraka()<6){
             
-            //Izvrsava se samo u slucaju da je pecurka bar malo uvucena
-            if(preostalo_koraka<6){
-                
-                string str=to_string(preostalo_koraka);
-                if(trenutno_zakljucana())
-                    //U slucaju da krtica trenutno uvlaci rotkvicu
-                    //broj preostalih uvlacenja je obojen u crveno
-                    ispis_teksta(poz_x,poz_z,str,1);
-                else
-                    ispis_teksta(poz_x,poz_z,str,0);
-                
-            }
-            
-            //Crtamo i rupu kada pecurka dodje do kape
-            if(preostalo_koraka<3){
-                glColor3f(0,0,0);
-                drawCircle(0.08,poz_x,poz_z);
-            
-                glPushMatrix();
-                    glTranslatef(0,-0.001,0);
-                    glColor3f(0.43,0.26,0.18);
-                    drawCircle(0.1,poz_x,poz_z);
-                glPopMatrix();
-                
-            }
-            
-            
-            //Iscrtavanje prstenova oko kape i stope
-            glPushMatrix();
-                glColor3f(0.2,0.2,0.2);
-                glTranslatef(poz_x,poz_y+0.1,poz_z);
-                 glBegin(GL_LINE_LOOP);
-                
-                        for(int i=0;i<220;i++){
-                            
-                            glVertex3f(cos(2*PI/220*i)*0.0801,0.0,sin(2*PI/220*i)*0.0801);
-                            
-                            
-                        }
-                
-                glEnd();
-            glPopMatrix();
-            
-            glPushMatrix();
-                glColor3f(0.2,0.2,0.2);
-                glTranslatef(poz_x,poz_y+0.001,poz_z);
-                 glBegin(GL_LINE_LOOP);
-                
-                        for(int i=0;i<180;i++){
-                            
-                            glVertex3f(cos(2*PI/180*i)*0.04,0.0,sin(2*PI/180*i)*0.04);
-                            
-                            
-                        }
-                
-                glEnd();
-            glPopMatrix();
-            
-            
-            //Crtanje kape pecurke (prepolovljena sfera)
-            glPushMatrix();
-                
-                   glTranslatef(poz_x,poz_y+0.1,poz_z);
-                
-                    glColor3f(0.61,0.28,0.87);
-                    
-                    
-                    glEnable(GL_CLIP_PLANE0);
-                    double clip_plane[]={0,1,0,0};
-                    glClipPlane(GL_CLIP_PLANE0,clip_plane);
-                    
-                    
-                    glutSolidSphere(0.08,30,30);
-                    
-                    
-                    glDisable(GL_CLIP_PLANE0);
-                    
-            glPopMatrix();
-            
-            
-            //Crtanje stope (cilindra), kod preuzet sa vezbi
-            glPushMatrix();
-                
-                glTranslatef(poz_x,poz_y,poz_z);
-                
-                glScalef(0.04,0.04,0.04);
-                
-                glColor3f(1,1,1);
-                float u,v;
-                glPushMatrix();
-        
-                for(u=0;u<PI;u+=PI/20){
-                    glBegin(GL_TRIANGLE_STRIP);
-                    
-                        for(v=0;v<=2*PI+EPSILON;v+=PI/20){
-                            glNormal3f(sin(v),0,cos(v));
-                            glVertex3f(sin(v),u,cos(v));
-                            
-                            glNormal3f(sin(v),0,cos(v));
-                            glVertex3f(sin(v),u+PI/20,cos(v));
-                        }
-                        
-                    glEnd();
-                }
-                
-                glPopMatrix();
-                
-            glPopMatrix();
+            string str=to_string(p.preostalo_koraka());
+            if(p.trenutno_zakljucana())
+                //U slucaju da krtica trenutno uvlaci rotkvicu
+                //broj preostalih uvlacenja je obojen u crveno
+                ispis_teksta(p.x(),p.z(),str,1);
+            else
+                ispis_teksta(p.x(),p.z(),str,0);
             
         }
         
-        //U slucaju da je pecurka pojedena
-        //crta se krug koji predstavlja rupu u zemlji
-        else {
-            
+        //Crtamo i rupu kada pecurka dodje do kape
+        if(p.preostalo_koraka()<3){
             glColor3f(0,0,0);
-            drawCircle(0.08,poz_x,poz_z);
-            
-            glDisable(GL_LIGHTING);
-            glDisable(GL_LIGHT0);
+            drawCircle(0.08,p.x(),p.z());
+        
             glPushMatrix();
                 glTranslatef(0,-0.001,0);
                 glColor3f(0.43,0.26,0.18);
-                drawCircle(0.1,poz_x,poz_z);
+                drawCircle(0.1,p.x(),p.z());
             glPopMatrix();
-            glEnable(GL_LIGHT0);
-            glEnable(GL_LIGHTING);
             
-            
-            //Kada je pojedena pecurka krtica se otkljucava
-            if(poklapaju_se_koordinate() && !krtica.provera_otkljucano())
-                krtica.otkljucaj();
         }
-    }
-    
-    //Metod za uvlacenje pecurke, pokrece se iz
-    //on_keyboard funkcije, pritiskom na taster 'u',
-    //ali tek nakon sto se krtica zakaci za pecurku
-    //pritiskom na taster 'i'
-    void uvuci(){
         
-       if(poklapaju_se_koordinate() && !pojedena() && !krtica.provera_otkljucano()){
-         
-           poz_y-=0.025;
-            preostalo_koraka--;
+        
+        //Iscrtavanje prstenova oko kape i stope
+        glPushMatrix();
+            glColor3f(0.2,0.2,0.2);
+            glTranslatef(p.x(),p.y()+0.1,p.z());
+                glBegin(GL_LINE_LOOP);
             
-            //Ako je pecurka uvucena pokrecemo 
-            //timer_pecurka koji pokrece efekat delovanja pecurke na krticu
-            //Ukoliko je pecurka dobra, krtica postaje brza i povrce moze 
-            //da uvuce u jednom potezu inace ne moze da se pomeri sve dok traje efekat
-            if(preostalo_koraka==0){
-                glutTimerFunc(300,timer_pecurka,TIMER_PECURKA);
-                pecurka_pokrenut=1;
-                //Povecava se broj osvojenih poena
-                krtica.uvecaj_poene(10);
+                    for(int i=0;i<220;i++){
+                        
+                        glVertex3f(cos(2*PI/220*i)*0.0801,0.0,sin(2*PI/220*i)*0.0801);
+                        
+                        
+                    }
+            
+            glEnd();
+        glPopMatrix();
+        
+        glPushMatrix();
+            glColor3f(0.2,0.2,0.2);
+            glTranslatef(p.x(),p.y()+0.001,p.z());
+                glBegin(GL_LINE_LOOP);
+            
+                    for(int i=0;i<180;i++){
+                        
+                        glVertex3f(cos(2*PI/180*i)*0.04,0.0,sin(2*PI/180*i)*0.04);
+                        
+                        
+                    }
+            
+            glEnd();
+        glPopMatrix();
+        
+        
+        //Crtanje kape pecurke (prepolovljena sfera)
+        glPushMatrix();
+            
+                glTranslatef(p.x(),p.y()+0.1,p.z());
+            
+                glColor3f(0.61,0.28,0.87);
+                
+                
+                glEnable(GL_CLIP_PLANE0);
+                double clip_plane[]={0,1,0,0};
+                glClipPlane(GL_CLIP_PLANE0,clip_plane);
+                
+                
+                glutSolidSphere(0.08,30,30);
+                
+                
+                glDisable(GL_CLIP_PLANE0);
+                
+        glPopMatrix();
+        
+        
+        //Crtanje stope (cilindra), kod preuzet sa vezbi
+        glPushMatrix();
+            
+            glTranslatef(p.x(),p.y(),p.z());
+            
+            glScalef(0.04,0.04,0.04);
+            
+            glColor3f(1,1,1);
+            float u,v;
+            glPushMatrix();
+    
+            for(u=0;u<PI;u+=PI/20){
+                glBegin(GL_TRIANGLE_STRIP);
+                
+                    for(v=0;v<=2*PI+EPSILON;v+=PI/20){
+                        glNormal3f(sin(v),0,cos(v));
+                        glVertex3f(sin(v),u,cos(v));
+                        
+                        glNormal3f(sin(v),0,cos(v));
+                        glVertex3f(sin(v),u+PI/20,cos(v));
+                    }
+                    
+                glEnd();
             }
-       }
-    }
-    
-    
-    float granica=0.1;
-    //Provera da li je krtica dovoljno blizu pecurki da moze da se
-    //uhvati za nju i da je uvuce
-    bool poklapaju_se_koordinate() const {
-        
-        return (krtica.x() >(poz_x-granica) && krtica.x() <(poz_x+granica)) &&
-            (krtica.z() >(poz_z-granica) && krtica.z() <(poz_z+granica));
             
-    }
-    
-    bool pojedena() const {
-        
-        return poz_y<=0.35;
+            glPopMatrix();
+            
+        glPopMatrix();
         
     }
     
-    //Provera da li je krtica trenutno zakacena na pecurku
-    bool trenutno_zakljucana(){
+    //U slucaju da je pecurka pojedena
+    //crta se krug koji predstavlja rupu u zemlji
+    else {
         
-        return poklapaju_se_koordinate() && !krtica.provera_otkljucano() && preostalo_koraka<6;
+        glColor3f(0,0,0);
+        drawCircle(0.08,p.x(),p.z());
         
+        glDisable(GL_LIGHTING);
+        glDisable(GL_LIGHT0);
+        glPushMatrix();
+            glTranslatef(0,-0.001,0);
+            glColor3f(0.43,0.26,0.18);
+            drawCircle(0.1,p.x(),p.z());
+        glPopMatrix();
+        glEnable(GL_LIGHT0);
+        glEnable(GL_LIGHTING);
+        
+        
+        //Kada je pojedena pecurka krtica se otkljucava
+        if(p.poklapaju_se_koordinate() && !p.m_krtica->provera_otkljucano())
+            p.m_krtica->otkljucaj();
     }
-   
-   
-    pair<float,float> get_koordinate(){
-        
-        return make_pair(poz_x,poz_z);
-        
-    }
-    
-    
-};
+}
+
 
 //Instanciramo pecurku
-static pecurka magicna_pecurka=pecurka();
+static pecurka magicna_pecurka=pecurka(&krtica);
 
 
 //Funkcija koja proverava da li je krtica u blizini nekog
@@ -1848,7 +1740,7 @@ static void on_display(void){
     }
     
     //Iscrtavamo pecurku
-    magicna_pecurka.iscrtaj();
+    iscrtaj_pecurku(magicna_pecurka);
 
     //Kretacnje seljaka
     cikica1.kretanje();
@@ -1970,20 +1862,23 @@ static void on_keyboard(unsigned char key,int x,int y){
         //Uvlacenje povrca
         case  'u':
             if(!igra_zavrsena){
-            if(sargarepice.size()>1){
-               
-                for (int i=0;i<sargarepice.size();i++)
-                    sargarepice[i].uvuci(pecurka_pokrenut);
-               
-            }
-            if(rotkvice.size()>1){
-        
-                for (int i=0;i<rotkvice.size();i++)
-                    rotkvice[i].uvuci(pecurka_pokrenut);
-        
-            }
+                if(sargarepice.size()>1){
+                
+                    for (int i=0;i<sargarepice.size();i++)
+                        sargarepice[i].uvuci(pecurka_pokrenut);
+                
+                }
+                if(rotkvice.size()>1){
             
-            magicna_pecurka.uvuci();
+                    for (int i=0;i<rotkvice.size();i++)
+                        rotkvice[i].uvuci(pecurka_pokrenut);
+            
+                }
+                
+                if(magicna_pecurka.uvuci() && magicna_pecurka.preostalo_koraka()==0) {
+                    glutTimerFunc(300,timer_pecurka,TIMER_PECURKA);
+                    pecurka_pokrenut=1;   
+                }
             }
             break;
             
