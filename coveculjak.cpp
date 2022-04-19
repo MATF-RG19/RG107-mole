@@ -303,7 +303,7 @@ void coveculjak::iscrtaj_na_poziciji(int pecurka_pokrenut, int pecurka_parametar
     
 }
 
-void coveculjak::hodaj( bool smer, 
+bool coveculjak::hodaj( bool smer, 
                 int pecurka_pokrenut, 
                 int pecurka_parametar, 
                 bool igra_zavrsena,
@@ -323,10 +323,7 @@ void coveculjak::hodaj( bool smer,
         glPopMatrix();
     }
     
-    if(uhvatio_krticu(sargarepice, rotkvice, magicna_pecurka)) {
-        //izgubio_si();==================================================================================================================================
-    }
-    
+    return uhvatio_krticu(sargarepice, rotkvice, magicna_pecurka);
 }
 
 void coveculjak::stani(){
@@ -343,7 +340,7 @@ void coveculjak::kreni(){
     
 }
 
-void coveculjak::kretanje(int pecurka_pokrenut, int pecurka_parametar, bool igra_zavrsena, 
+bool coveculjak::kretanje(int pecurka_pokrenut, int pecurka_parametar, bool igra_zavrsena, 
                 const std::vector<sargarepa>& sargarepice,
                 const std::vector<rotkvica>& rotkvice,
                 const pecurka& magicna_pecurka) {
@@ -351,12 +348,14 @@ void coveculjak::kretanje(int pecurka_pokrenut, int pecurka_parametar, bool igra
     //Coveculjak hoda ukoliko se nalazi izmedju granica
     //Provera kada se krece paralelno sa z osom
     if(smer && m_poz+m_timer_vrednost<=m_granica_plus && m_poz+m_timer_vrednost>=m_granica_minus){
-            hodaj(smer, pecurka_pokrenut, pecurka_parametar, igra_zavrsena, sargarepice, rotkvice, magicna_pecurka);
+            if(hodaj(smer, pecurka_pokrenut, pecurka_parametar, igra_zavrsena, sargarepice, rotkvice, magicna_pecurka))
+                return false;
         
     }
     //Provera kada se krece paralelno sa x osom
     else if(!smer && m_pox+m_timer_vrednost<=m_granica_plus && m_pox+m_timer_vrednost>=m_granica_minus){
-            hodaj(smer, pecurka_pokrenut, pecurka_parametar, igra_zavrsena,sargarepice, rotkvice, magicna_pecurka);
+            if(hodaj(smer, pecurka_pokrenut, pecurka_parametar, igra_zavrsena,sargarepice, rotkvice, magicna_pecurka))
+                return false;
         
     }
     
@@ -444,5 +443,5 @@ void coveculjak::kretanje(int pecurka_pokrenut, int pecurka_parametar, bool igra
         kreni();
     
     }
-    
+    return true;
 }

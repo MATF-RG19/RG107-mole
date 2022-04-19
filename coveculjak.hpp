@@ -84,7 +84,7 @@ public:
     //Metod koji pokrece coveculjka
     // i u svakom koraku proverava da li je
     //u oblasti krtica koja trenutno uvlaci povrce
-    void hodaj( bool smer, 
+    bool hodaj( bool smer, 
                 int pecurka_pokrenut, 
                 int pecurka_parametar, 
                 bool igra_zavrsena,
@@ -100,7 +100,7 @@ public:
     //ako se krece gore-dole onda je true, false znaci levo-desno
     bool smer=true;
 
-    void kretanje(int pecurka_pokrenut, int pecurka_parametar, bool igra_zavrsena, 
+    bool kretanje(int pecurka_pokrenut, int pecurka_parametar, bool igra_zavrsena, 
                 const std::vector<sargarepa>& sargarepice,
                 const std::vector<rotkvica>& rotkvice,
                 const pecurka& magicna_pecurka);

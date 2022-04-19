@@ -103,21 +103,18 @@ static void timer_pecurka(int id){
 }
 
 
-//Instanciramo krticu
-static mole krtica=mole(0,1.45);
-
 //Koordinate kamere
 static float vx,vy,vz;
 
-
-//Vektori koji sadrze povrce
+static mole krtica=mole(0,1.45);
+static pecurka magicna_pecurka=pecurka(&krtica);
 static vector<sargarepa>sargarepice;
 static vector<rotkvica>rotkvice;
 
 
 //Random za svaku poziciju biramo da li ce se 
 //povrce tu uopste pojaviti i koja ce vrsta biti ako se pojavljuje
-static void povrce(){
+static void povrce(vector<sargarepa>& sargarepice, vector<rotkvica>&rotkvice){
     
    srand(time(NULL));
     float x=1.25;
@@ -153,8 +150,7 @@ static void povrce(){
     
 }
 
-//Instanciramo pecurku
-static pecurka magicna_pecurka=pecurka(&krtica);
+
 
 //Funkcija koja proverava da li je krtica u blizini nekog
 //povrca i da u tom slucaju moze da se zakljuca
@@ -281,9 +277,6 @@ static void on_timer4(int id){
     
 }
 
-
-
-
 //Funkcija zakljucava krticu i zaustavlja sve tajmere
 static void kraj_igre(){
     
@@ -296,7 +289,6 @@ static void kraj_igre(){
     igra_zavrsena=true;
     
 }
-
 
 //Funkcija koja zaustavlja igru u slucaju da je seljak uhvatio krticu
 //Pokrece je coveculjak kada je uhvati
@@ -405,9 +397,12 @@ static void on_display(void){
     iscrtaj_pecurku(magicna_pecurka);
 
     //Kretacnje seljaka
-    cikica1.kretanje(pecurka_pokrenut, pecurka_parametar,igra_zavrsena,sargarepice,rotkvice,magicna_pecurka);
-    cikica2.kretanje(pecurka_pokrenut, pecurka_parametar,igra_zavrsena,sargarepice,rotkvice,magicna_pecurka);
+    bool krece_se1 = cikica1.kretanje(pecurka_pokrenut, pecurka_parametar,igra_zavrsena,sargarepice,rotkvice,magicna_pecurka);
+    bool krece_se2 = cikica2.kretanje(pecurka_pokrenut, pecurka_parametar,igra_zavrsena,sargarepice,rotkvice,magicna_pecurka);
     
+    if (!krece_se1 || !krece_se2)
+        izgubio_si();
+
     //Ispis broja poena na ekranu
     if(!igra_zavrsena){
         glColor3f(0.41,0.29,0.18);
@@ -573,7 +568,7 @@ int main(int argc,char** argv){
     vreme_pokrenut=1;
     
     //Pokretanje funkcije koja povrce smesta u vektore
-    povrce();
+    povrce(sargarepice, rotkvice);
     
     glutDisplayFunc(on_display);
     glutKeyboardFunc(on_keyboard);
