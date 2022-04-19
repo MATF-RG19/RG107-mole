@@ -4,7 +4,7 @@ CXXFLAGS = -std=c++17 -g -Wall -Wextra -Wno-sign-compare -Wno-unused-parameter
 #LDFLAGS = -L/usr/X11R6/lib -L/usr/pkg/lib
 LDLIBS  = -lglut -lGLU -lGL -lm
 
-$(PROGRAM): main.o image.o mole.o sargarepa.o rotkvica.o pecurka.o coveculjak.o iscrtavanja.o
+$(PROGRAM): main.o image.o mole.o sargarepa.o rotkvica.o pecurka.o coveculjak.o iscrtavanja.o igra.o
 	$(CXX) -o $@ $(CXXFLAGS) $^ $(LDLIBS)
 
 image.o: image.c image.h
@@ -29,6 +29,9 @@ coveculjak.o: coveculjak.cpp coveculjak.hpp
 	$(CXX) -c -o $@ $(CXXFLAGS) $< $(LDLIBS)
 
 iscrtavanja.o: iscrtavanja.cpp iscrtavanja.hpp
+	$(CXX) -c -o $@ $(CXXFLAGS) $< $(LDLIBS)
+
+igra.o: igra.cpp igra.hpp
 	$(CXX) -c -o $@ $(CXXFLAGS) $< $(LDLIBS)
 
 .PHONY: clean run

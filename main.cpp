@@ -12,6 +12,7 @@
 #include "pecurka.hpp"
 #include "coveculjak.hpp"
 #include "iscrtavanja.hpp"
+#include "igra.hpp"
 
 #define PI 3.14159265
 #define EPSILON 0.01
@@ -29,10 +30,6 @@
 using namespace std;
 
 
-//BITNO: Parametri za sve boje koriscene u projektu su sa 
-//sajta Encycolorpedia:https://encycolorpedia.com
-
-
 static int window_height,window_width;
 
 static GLuint names[3];
@@ -40,16 +37,9 @@ static GLuint names[3];
 //Indikator koji sluzi da onemoguci otkljucavanje krtice onda kada je igra gotova
 static bool igra_zavrsena;
 
-
 //Promenljiva  kojoj cuvamo informaciju da li je pecurka doba ili losa
 //Odnosno kakav efekat na krticu ima kada je pojede
 static bool je_dobra;
-
-//Funkcije koje se izvrsavaju kada je igra zavrsena,
-//detaljniji opis je iznad implementacija
-static void kraj_igre();
-static void izgubio_si();
-static void pobedio_si();
 
 //Promenljive vezane za tajmer pecurka
 static int pecurka_vreme=10;
@@ -277,63 +267,6 @@ static void on_timer4(int id){
     
 }
 
-//Funkcija zakljucava krticu i zaustavlja sve tajmere
-static void kraj_igre(){
-    
-    krtica.zakljucaj();
-    cikica1.stani();
-    cikica2.stani();
-    vreme_pokrenut=0;
-    pecurka_pokrenut=0;
-    
-    igra_zavrsena=true;
-    
-}
-
-//Funkcija koja zaustavlja igru u slucaju da je seljak uhvatio krticu
-//Pokrece je coveculjak kada je uhvati
-static void izgubio_si(){
-    
-    kraj_igre();
-    glColor3f(1.0,1.0,1.0);
-    //ispis_fiksiranog_teksta("KRAJ IGRE",350,350,1);
-    show_game_over(names,window_height,window_width);
-}
-
-//Funkcija koja proverava da li je sve povrce pojedeno
-//ukoliko jeste, igrac je pobedio
-//VAZNO:Pecurka ne mora biti pojedena!!!
-static void pobedio_si(){
-    
-    float a=true;
-    
-      if(sargarepice.size()>1){
-        
-        for (int i=0;i<sargarepice.size();i++)
-            if(!sargarepice[i].pojedena())
-                a=false;
-        
-    }
-        
-    if(rotkvice.size()>1){
-        
-        for (int i=0;i<rotkvice.size();i++)
-            if(!rotkvice[i].pojedena())
-                a=false;
-            
-    }
-    
-    if(a && vreme>0){
-    kraj_igre();
-    
-    show_game_won(names,window_height,window_width);
-    glColor3f(1,1,1);
-    std::string p="Osvojeno poena:";
-    ispis_fiksiranog_teksta(p,300,300,0,window_height,window_width);
-    ispis_fiksiranog_teksta(to_string(krtica.poeni()),440,300,0,window_height,window_width);
-    }
-}
-
 static void on_reshape(int width, int height)
 {
     window_width = width;
@@ -401,7 +334,7 @@ static void on_display(void){
     bool krece_se2 = cikica2.kretanje(pecurka_pokrenut, pecurka_parametar,igra_zavrsena,sargarepice,rotkvice,magicna_pecurka);
     
     if (!krece_se1 || !krece_se2)
-        izgubio_si();
+        izgubio_si(krtica, cikica1, cikica2, vreme_pokrenut, pecurka_pokrenut, igra_zavrsena, names, window_height, window_width);
 
     //Ispis broja poena na ekranu
     if(!igra_zavrsena){
@@ -439,12 +372,12 @@ static void on_display(void){
     //Provera da li je sve povrce pojedeno, u tom slucaju je
     //Igrac pobedio
     //VAZNO:Pecurka ne mora biti pojedena!!!
-    pobedio_si();
+    pobedio_si(krtica, cikica1, cikica2, vreme_pokrenut, pecurka_pokrenut, igra_zavrsena, names, window_height, window_width, sargarepice, rotkvice, vreme);
     
     
      //Ako je vreme isteklo igrac je izgubio
     if(vreme==0)
-        izgubio_si();
+        izgubio_si(krtica, cikica1, cikica2, vreme_pokrenut, pecurka_pokrenut, igra_zavrsena, names, window_height, window_width);
     
     
     glutSwapBuffers();
