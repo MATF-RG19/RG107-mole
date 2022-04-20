@@ -5,7 +5,6 @@
 #include<time.h>
 #include<vector>
 
-#include "image.h"
 #include "mole.hpp"
 #include "sargarepa.hpp"
 #include "rotkvica.hpp"

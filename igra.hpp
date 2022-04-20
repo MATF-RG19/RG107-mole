@@ -3,6 +3,7 @@
 
 #include "iscrtavanja.hpp"
 #include "coveculjak.hpp"
+#include <GL/glut.h>
 
 //Funkcija zakljucava krticu i zaustavlja sve tajmere
 void kraj_igre(mole& krtica, coveculjak& cikica1, coveculjak& cikica2, int& vreme_pokrenut, int& pecurka_pokrenut, bool& igra_zavrsena);

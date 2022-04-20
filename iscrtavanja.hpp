@@ -1,6 +1,6 @@
 #include "image.h"
 #include <GL/glut.h>
-#include<cmath>
+#include <cmath>
 #include <string>
 
 #include "sargarepa.hpp"
