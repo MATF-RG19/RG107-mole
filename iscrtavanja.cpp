@@ -25,7 +25,7 @@ void initialize(GLuint names[])
     //kako bi radilo u image.c sam promenio da drugi argument fje image_read bude
     //konstantan char*
     //a onda sam na internetu pronasao metodu c_str() nad objektima tipa string
-    std::string s = "game_over.bmp";
+    std::string s = "../game_over.bmp";
     image_read(image, s.c_str());
 
     
@@ -47,7 +47,7 @@ void initialize(GLuint names[])
     //zavrsavamo rad nad teksturom
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    std::string s2 = "win.bmp";
+    std::string s2 = "../win.bmp";
     image_read(image, s2.c_str());
 
     
@@ -70,7 +70,7 @@ void initialize(GLuint names[])
     glBindTexture(GL_TEXTURE_2D, 0);
     
     
-    std::string s3 = "trava.bmp";
+    std::string s3 = "../trava.bmp";
     image_read(image, s3.c_str());
 
     
