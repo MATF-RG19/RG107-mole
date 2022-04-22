@@ -32,7 +32,7 @@ void pobedio_si(mole& krtica, coveculjak& cikica1, coveculjak& cikica2,
     
       if(sargarepice.size()>1){
         
-        for (int i=0;i<sargarepice.size();i++)
+        for (unsigned i=0;i<sargarepice.size();i++)
             if(!sargarepice[i].pojedena())
                 a=false;
         
@@ -40,7 +40,7 @@ void pobedio_si(mole& krtica, coveculjak& cikica1, coveculjak& cikica2,
         
     if(rotkvice.size()>1){
         
-        for (int i=0;i<rotkvice.size();i++)
+        for (unsigned i=0;i<rotkvice.size();i++)
             if(!rotkvice[i].pojedena())
                 a=false;
             

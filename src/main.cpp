@@ -151,7 +151,7 @@ static bool provera_zakljucavanja(const mole& krtica, const vector<sargarepa>& s
           
         if(sargarepice.size()>1){
         
-            for (int i=0;i<sargarepice.size();i++)
+            for (unsigned i=0;i<sargarepice.size();i++)
             if(sargarepice[i].poklapaju_se_koordinate() && !sargarepice[i].pojedena())
                 a=true;
         
@@ -160,7 +160,7 @@ static bool provera_zakljucavanja(const mole& krtica, const vector<sargarepa>& s
     
         if(rotkvice.size()>1){
         
-            for (int i=0;i<rotkvice.size();i++)
+            for (unsigned i=0;i<rotkvice.size();i++)
                 if(rotkvice[i].poklapaju_se_koordinate() && !rotkvice[i].pojedena())
                     a=true;
         
@@ -312,7 +312,7 @@ static void on_display(void){
     //Iscrtavanje svih sargarepa
     if(sargarepice.size()>0){
         
-        for (int i=0;i<sargarepice.size();i++)
+        for (unsigned i=0;i<sargarepice.size();i++)
             iscrtaj_sargarepu(sargarepice[i],pecurka_pokrenut, pecurka_parametar);
         
     }
@@ -320,7 +320,7 @@ static void on_display(void){
     //Iscrtavanje svih rotkvica
     if(rotkvice.size()>0){
         
-        for (int i=0;i<rotkvice.size();i++)
+        for (unsigned i=0;i<rotkvice.size();i++)
             iscrtaj_rotkvicu(rotkvice[i],pecurka_pokrenut, pecurka_parametar);
         
     }
@@ -453,13 +453,13 @@ static void on_keyboard(unsigned char key,int x,int y){
             if(!igra_zavrsena){
                 if(sargarepice.size()>1){
                 
-                    for (int i=0;i<sargarepice.size();i++)
+                    for (unsigned i=0;i<sargarepice.size();i++)
                         sargarepice[i].uvuci(pecurka_pokrenut);
                 
                 }
                 if(rotkvice.size()>1){
             
-                    for (int i=0;i<rotkvice.size();i++)
+                    for (unsigned i=0;i<rotkvice.size();i++)
                         rotkvice[i].uvuci(pecurka_pokrenut);
             
                 }

@@ -186,7 +186,7 @@ void ispis_teksta(float x, float y,std::string s,int opcija)
         glColor3d(1,0,0);
     
     glRasterPos3f(x,0.65,y);
-    for(int i=0;i<s.size();i++)
+    for(unsigned i=0;i<s.size();i++)
         glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_10, s[i]);
         
     glEnable(GL_LIGHT0);
@@ -214,14 +214,14 @@ void ispis_fiksiranog_teksta(std::string s,float x,float y,int opcija,int window
             
             if(opcija==0){
                 
-                for(int i=0;i<s.length();i++)
+                for(unsigned i=0;i<s.length();i++)
                 glutBitmapCharacter(GLUT_BITMAP_9_BY_15, s[i]);
                 
             }
             
             else if(opcija==1){
                 
-                for(int i=0;i<s.length();i++)
+                for(unsigned i=0;i<s.length();i++)
                 glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, s[i]);
                 
             }

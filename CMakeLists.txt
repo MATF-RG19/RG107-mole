@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 project(MoleGame VERSION 1.0.0)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall -Wextra -Wno-sign-compare -Wno-unused-parameter")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall -Wextra -Wno-unused-parameter")
 
 add_subdirectory(lib/image)
 add_subdirectory(lib/mole)

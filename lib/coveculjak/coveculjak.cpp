@@ -258,7 +258,7 @@ bool coveculjak::uhvatio_krticu(const std::vector<sargarepa>& sargarepice,
     //Moramo proveriti da li se u vektorima nalazi bar jedno povrce
     if(sargarepice.size()>0){
     
-        for (int i=0;i<sargarepice.size();i++){
+        for (unsigned i=0;i<sargarepice.size();i++){
             std::pair<float,float>k=sargarepice[i].get_koordinate();
             
             if(stranica1>=k.first && stranica2<=k.first && 
@@ -271,7 +271,7 @@ bool coveculjak::uhvatio_krticu(const std::vector<sargarepa>& sargarepice,
 
     if(rotkvice.size()>0){
     
-        for (int i=0;i<rotkvice.size();i++){
+        for (unsigned i=0;i<rotkvice.size();i++){
             std::pair<float,float>k=rotkvice[i].get_koordinate();
             
             if(stranica1>=k.first && stranica2<=k.first && 
