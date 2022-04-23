@@ -28,7 +28,7 @@ void pobedio_si(mole& krtica, coveculjak& cikica1, coveculjak& cikica2,
                         const std::vector<rotkvica>& rotkvice,
                         int vreme){
     
-    float a=true;
+    bool a=true;
     
       if(sargarepice.size()>1){
         
