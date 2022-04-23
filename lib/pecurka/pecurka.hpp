@@ -14,7 +14,7 @@ private:
     int m_preostalo_koraka;
 public:
     mole* m_krtica = new mole(0,0); 
-    pecurka(mole* krtica);
+    explicit pecurka(mole* krtica);
     
     bool uvuci();
     
