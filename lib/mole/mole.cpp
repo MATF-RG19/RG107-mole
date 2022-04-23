@@ -24,11 +24,11 @@ void mole::iscrtaj() {
         glEnable(GL_LIGHTING);        
 }
 
-float mole::x() const {
+auto mole::x() const -> float {
     return cx;
 }
 
-float mole::z() const {
+auto mole::z() const -> float {
     return cz;
 }
 
@@ -80,7 +80,7 @@ void mole::otkljucaj(){
     otkljucano=true;
 }
 
-bool mole::provera_otkljucano(){
+auto mole::provera_otkljucano() -> bool{
     return otkljucano;
 }
 
@@ -88,6 +88,6 @@ void mole::uvecaj_poene(int broj_poena) {
     m_poeni += broj_poena;
 }
 
-int mole::poeni() const {
+auto mole::poeni() const -> int {
     return m_poeni;
 }

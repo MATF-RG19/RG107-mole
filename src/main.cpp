@@ -1,8 +1,8 @@
-#include<iostream>
 #include<GL/glut.h>
 #include<cmath>
+#include<ctime>
+#include<iostream>
 #include<string>
-#include<time.h>
 #include<vector>
 
 #include "mole.hpp"
@@ -105,7 +105,7 @@ static vector<rotkvica>rotkvice;
 //povrce tu uopste pojaviti i koja ce vrsta biti ako se pojavljuje
 static void povrce(vector<sargarepa>& sargarepice, vector<rotkvica>&rotkvice){
     
-   srand(time(NULL));
+   srand(time(nullptr));
     float x=1.25;
     for(int i=0;i<6;i++){
         float z=-1.25;
@@ -143,8 +143,8 @@ static void povrce(vector<sargarepa>& sargarepice, vector<rotkvica>&rotkvice){
 
 //Funkcija koja proverava da li je krtica u blizini nekog
 //povrca i da u tom slucaju moze da se zakljuca
-static bool provera_zakljucavanja(const mole& krtica, const vector<sargarepa>& sargarepice, 
-                                                        const vector<rotkvica>& rotkvice, const pecurka& magicna_pecurka){
+static auto provera_zakljucavanja(const mole& krtica, const vector<sargarepa>& sargarepice, 
+                                                        const vector<rotkvica>& rotkvice, const pecurka& magicna_pecurka) -> bool{
         
         bool a=false;
         
@@ -272,7 +272,7 @@ static void on_reshape(int width, int height)
     window_height = height;
 }
 
-static void on_display(void){
+static void on_display(){
      
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
@@ -478,7 +478,7 @@ static void on_keyboard(unsigned char key,int x,int y){
 
 
 
-int main(int argc,char** argv){
+auto main(int argc,char** argv) -> int{
 
     glutInit(&argc,argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
@@ -511,7 +511,7 @@ int main(int argc,char** argv){
     
     //Random biramo da li je pecurka dobra ili losa
     //tj. kakav ce efekat imati na krticu ako je pojede
-    srand(time(NULL));
+    srand(time(nullptr));
     je_dobra= rand()/(float)RAND_MAX >0.5 ? true:false;
     
     //POKRETANJE SVIH TAJMERA

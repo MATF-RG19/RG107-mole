@@ -10,7 +10,7 @@ coveculjak::coveculjak(float a,float b,float c,float d){
     
 }
 
-int coveculjak::timer_noga() const {
+auto coveculjak::timer_noga() const -> int {
     return m_timer_noga;
 }
 
@@ -18,11 +18,11 @@ void coveculjak::inc_timer_noga(int inc) {
     m_timer_noga += inc;
 }
 
-int coveculjak::timer_pokrenut() const {
+auto coveculjak::timer_pokrenut() const -> int {
     return m_timer_pokrenut;
 }
 
-double coveculjak::timer_vrednost() const {
+auto coveculjak::timer_vrednost() const -> double {
     return m_timer_vrednost;
 }
 
@@ -30,7 +30,7 @@ void coveculjak::inc_timer_vrednost(double inc) {
     m_timer_vrednost += inc;
 }
 
-int coveculjak::ind1() const {
+auto coveculjak::ind1() const -> int {
     return m_ind1;
 }
 
@@ -196,10 +196,10 @@ void coveculjak::oblast(){
     glEnable(GL_LIGHTING);
 }
 
-bool coveculjak::uhvatio_krticu(const std::vector<sargarepa>& sargarepice,
+auto coveculjak::uhvatio_krticu(const std::vector<sargarepa>& sargarepice,
                         const std::vector<rotkvica>& rotkvice,
                         const pecurka& magicna_pecurka
-                        ){
+                        ) -> bool{
         
     float x_trenutno;
     float y_trenutno;
@@ -303,13 +303,13 @@ void coveculjak::iscrtaj_na_poziciji(int pecurka_pokrenut, int pecurka_parametar
     
 }
 
-bool coveculjak::hodaj( bool smer, 
+auto coveculjak::hodaj( bool smer, 
                 int pecurka_pokrenut, 
                 int pecurka_parametar, 
                 bool igra_zavrsena,
                 const std::vector<sargarepa>& sargarepice,
                 const std::vector<rotkvica>& rotkvice,
-                const pecurka& magicna_pecurka) {
+                const pecurka& magicna_pecurka) -> bool {
         
     if(!igra_zavrsena){
         glPushMatrix();
@@ -340,10 +340,10 @@ void coveculjak::kreni(){
     
 }
 
-bool coveculjak::kretanje(int pecurka_pokrenut, int pecurka_parametar, bool igra_zavrsena, 
+auto coveculjak::kretanje(int pecurka_pokrenut, int pecurka_parametar, bool igra_zavrsena, 
                 const std::vector<sargarepa>& sargarepice,
                 const std::vector<rotkvica>& rotkvice,
-                const pecurka& magicna_pecurka) {
+                const pecurka& magicna_pecurka) -> bool {
     
     //Coveculjak hoda ukoliko se nalazi izmedju granica
     //Provera kada se krece paralelno sa z osom
@@ -386,7 +386,7 @@ bool coveculjak::kretanje(int pecurka_pokrenut, int pecurka_parametar, bool igra
         //Odlucujemo da li ce iz trenutno pozicije ici gore/dole ili levo/desno
         //Ukoliko odabere levo/desno kretace se levo ili desno u zavisnosti od toga
         //do koje je ivice stigao, ne moze preci preko granice kvadrata koji mu je zadat
-        srand(time(NULL));
+        srand(time(nullptr));
         smer=(2*(rand()/(float)RAND_MAX)>=1.0 ? true:false);
         
         //F-ovi sluze da bi poredjenje uopste bilo moguce, inace ne radi kako treba

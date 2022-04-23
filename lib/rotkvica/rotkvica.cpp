@@ -35,43 +35,43 @@ void rotkvica::uvuci(bool pecurka_pokrenut){
     }
 }
 
-bool rotkvica::poklapaju_se_koordinate() const {
+auto rotkvica::poklapaju_se_koordinate() const -> bool {
         
     return (m_krtica->x() >(poz_x-granica) && m_krtica->x() <(poz_x+granica)) &&
         (m_krtica->z() >(poz_z-granica) && m_krtica->z() <(poz_z+granica));
         
 }
 
-bool rotkvica::pojedena() const {
+auto rotkvica::pojedena() const -> bool {
         
     return poz_y<=0.45;
         
 }
 
-bool rotkvica::trenutno_zakljucana() const {
+auto rotkvica::trenutno_zakljucana() const -> bool {
         
     return poklapaju_se_koordinate() && !m_krtica->provera_otkljucano() && m_preostalo_koraka<3;
     
 }
 
-std::pair<float,float> rotkvica::get_koordinate() const {
+auto rotkvica::get_koordinate() const -> std::pair<float,float> {
         
     return std::make_pair(poz_x,poz_z);
         
 }
 
-int rotkvica::preostalo_koraka() const {
+auto rotkvica::preostalo_koraka() const -> int {
         return m_preostalo_koraka;
 }
 
-float rotkvica::x() const {
+auto rotkvica::x() const -> float {
         return poz_x;
 }
 
-float rotkvica::y() const {
+auto rotkvica::y() const -> float {
         return poz_y;
 }
 
-float rotkvica::z() const {
+auto rotkvica::z() const -> float {
         return poz_z;
 }
