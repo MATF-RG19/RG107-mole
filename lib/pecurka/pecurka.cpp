@@ -41,7 +41,7 @@ pecurka::pecurka(mole* krtica) {
        
 }
 
-bool pecurka::uvuci(){
+auto pecurka::uvuci() -> bool{
     
     if(poklapaju_se_koordinate() && !pojedena() && !m_krtica->provera_otkljucano()){
         
@@ -61,44 +61,44 @@ bool pecurka::uvuci(){
     return false;
 }
 
-bool pecurka::poklapaju_se_koordinate() const {
+auto pecurka::poklapaju_se_koordinate() const -> bool {
     
     return (m_krtica->x() >(poz_x-granica) && m_krtica->x() <(poz_x+granica)) &&
         (m_krtica->z() >(poz_z-granica) && m_krtica->z() <(poz_z+granica));
         
 }
 
-bool pecurka::pojedena() const {
+auto pecurka::pojedena() const -> bool {
         
     return poz_y<=0.35;
     
 }
 
-bool pecurka::trenutno_zakljucana() const {
+auto pecurka::trenutno_zakljucana() const -> bool {
     
     return poklapaju_se_koordinate() && !m_krtica->provera_otkljucano() && m_preostalo_koraka<6;
     
 }
 
-int pecurka::preostalo_koraka() const {
+auto pecurka::preostalo_koraka() const -> int {
 
     return m_preostalo_koraka;
 
 }
 
-float pecurka::x() const {
+auto pecurka::x() const -> float {
         return poz_x;
     }
 
-float pecurka::y() const {
+auto pecurka::y() const -> float {
     return poz_y;
 }
 
-float pecurka::z() const {
+auto pecurka::z() const -> float {
     return poz_z;
 }
 
-std::pair<float,float> pecurka::get_koordinate() const {
+auto pecurka::get_koordinate() const -> std::pair<float,float> {
         
     return std::make_pair(poz_x,poz_z);
         

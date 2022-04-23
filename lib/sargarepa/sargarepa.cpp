@@ -34,43 +34,43 @@ void sargarepa::uvuci(bool pecurka_pokrenut) {
                 
         }
 }
-bool sargarepa::poklapaju_se_koordinate() const {
+auto sargarepa::poklapaju_se_koordinate() const -> bool {
         
         return (m_krtica->x() >(poz_x-granica) && m_krtica->x() <(poz_x+granica)) &&
             (m_krtica->z() >(poz_z-granica) && m_krtica->z() <(poz_z+granica));
     
 }
 
-bool sargarepa::pojedena() const {
+auto sargarepa::pojedena() const -> bool {
         
         return poz_y<=0.5;
         
 }
 
-bool sargarepa::trenutno_zakljucana() const {
+auto sargarepa::trenutno_zakljucana() const -> bool {
         
         return poklapaju_se_koordinate() && !m_krtica->provera_otkljucano() && m_preostalo_koraka<4;
         
 }
 
-std::pair<float,float> sargarepa::get_koordinate() const {
+auto sargarepa::get_koordinate() const -> std::pair<float,float> {
         
         return std::make_pair(poz_x,poz_z);
         
 }
 
-int sargarepa::preostalo_koraka() const {
+auto sargarepa::preostalo_koraka() const -> int {
         return m_preostalo_koraka;
 }
 
-float sargarepa::x() const {
+auto sargarepa::x() const -> float {
         return poz_x;
 }
 
-float sargarepa::y() const {
+auto sargarepa::y() const -> float {
         return poz_y;
 }
 
-float sargarepa::z() const {
+auto sargarepa::z() const -> float {
         return poz_z;
 }
