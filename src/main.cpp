@@ -310,17 +310,17 @@ static void on_display(void){
     
 
     //Iscrtavanje svih sargarepa
-    if(sargarepice.size()>0){
-        
-        for (unsigned i=0;i<sargarepice.size();i++)
+    if(!sargarepice.empty()){
+        unsigned n = sargarepice.size();
+        for (unsigned i=0; i<n; ++i)
             iscrtaj_sargarepu(sargarepice[i],pecurka_pokrenut, pecurka_parametar);
         
     }
         
     //Iscrtavanje svih rotkvica
-    if(rotkvice.size()>0){
-        
-        for (unsigned i=0;i<rotkvice.size();i++)
+    if(!rotkvice.empty()){
+        unsigned n = rotkvice.size();
+        for (unsigned i=0; i<n; ++i)
             iscrtaj_rotkvicu(rotkvice[i],pecurka_pokrenut, pecurka_parametar);
         
     }
